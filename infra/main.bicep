@@ -19,6 +19,22 @@ param publisherEmail string
 @description('Publisher Name for APIM')
 param publisherName string
 
+@description('The chat completion model to deploy, be sure its supported in the specific region')
+@allowed([
+  'gpt-4o-mini'
+  'gpt-4.1-mini'
+  'model-router'
+])
+param chatCompletionModels array
+
+@description('The embedding model to deploy, be sure its supported in the specific region')
+@allowed([
+  'text-embedding-ada-002'
+  'text-embedding-3-small'
+  'text-embedding-3-large'
+])
+param embeddingModels array
+
 @description('The SKU of APIM')
 @allowed([
   'Developer'
@@ -48,5 +64,16 @@ module service 'br/public:avm/res/api-management/service:0.9.1' = {
     // Non-required parameters
     enableDeveloperPortal: true
     sku: apimSku
+  }
+}
+
+/* Deploy Azure AI Foundry */
+module foundry 'ai/foundry.bicep' = {
+  scope: rg
+  params: {
+    location: location
+    chatCompletionModels: chatCompletionModels
+    embeddingModels: embeddingModels
+    suffix: suffix
   }
 }
