@@ -11,3 +11,10 @@ module backend 'backend/backend.bicep' = {
     foundryEndpoint: endpointFoundry
   }
 }
+
+module api 'api/foundry.bicep' = {
+  name: 'api'
+  params: {
+    apimName: apimName
+  }
+}

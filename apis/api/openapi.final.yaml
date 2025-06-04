@@ -1,10 +1,10 @@
 openapi: 3.0.1
 info:
-  title: GenAI Gateway Demo
+  title: foundry
   description: Azure OpenAI APIs for completions and search
   version: "1.0"
 servers:
-  - url: https://api-fnwykhp52ku76.azure-api.net/new/openai
+  - url: https://api-fnwykhp52ku76.azure-api.net/gen/openai
 paths:
   "/deployments/{deployment-id}/completions":
     post:
