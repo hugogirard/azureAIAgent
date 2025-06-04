@@ -4,7 +4,7 @@ info:
   description: Azure OpenAI APIs for completions and search
   version: "1.0"
 servers:
-  - url: https://__apimName__.azure-api.net/new/openai
+  - url: https://__apimName__.azure-api.net/gen/openai
 paths:
   "/deployments/{deployment-id}/completions":
     post:
