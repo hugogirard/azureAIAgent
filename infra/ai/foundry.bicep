@@ -1,9 +1,9 @@
 param location string
 param suffix string
-param chatCompletionModels array
-param embeddingModels array
+param chatCompletionModel string
+param embeddingModel string
 
-var aiFoundryName = 'foundry-${suffix}'
+var aiFoundryName = 'aifoundry${suffix}'
 
 resource aiFoundry 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' = {
   name: aiFoundryName
@@ -16,11 +16,11 @@ resource aiFoundry 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' = {
   }
   kind: 'AIServices'
   properties: {
+    publicNetworkAccess: 'Enabled'
     // required to work in AI Foundry
     allowProjectManagement: true
-    // Defines developer API endpoint subdomain
-    customSubDomainName: aiFoundryName
     disableLocalAuth: true
+    customSubDomainName: aiFoundryName
   }
 }
 
@@ -42,36 +42,35 @@ resource aiProject 'Microsoft.CognitiveServices/accounts/projects@2025-04-01-pre
 /*
   Optionally deploy a model to use in playground, agents and other tools.
 */
-resource chatModelDeployment 'Microsoft.CognitiveServices/accounts/deployments@2024-10-01' = [
-  for model in chatCompletionModels: {
-    parent: aiFoundry
-    name: model
-    sku: {
-      capacity: 1
-      name: 'GlobalStandard'
-    }
-    properties: {
-      model: {
-        name: model
-        format: 'OpenAI'
-      }
+resource chatModelDeployment 'Microsoft.CognitiveServices/accounts/deployments@2024-10-01' = {
+  parent: aiFoundry
+  name: chatCompletionModel
+  sku: {
+    capacity: 1
+    name: 'GlobalStandard'
+  }
+  properties: {
+    model: {
+      name: chatCompletionModel
+      format: 'OpenAI'
     }
   }
-]
+}
 
-resource embeddingModelDeployment 'Microsoft.CognitiveServices/accounts/deployments@2024-10-01' = [
-  for model in embeddingModels: {
-    parent: aiFoundry
-    name: model
-    sku: {
-      capacity: 1
-      name: 'GlobalStandard'
-    }
-    properties: {
-      model: {
-        name: model
-        format: 'OpenAI'
-      }
+resource embeddingModelDeployment 'Microsoft.CognitiveServices/accounts/deployments@2024-10-01' = {
+  parent: aiFoundry
+  dependsOn: [
+    chatModelDeployment
+  ]
+  name: embeddingModel
+  sku: {
+    capacity: 1
+    name: 'GlobalStandard'
+  }
+  properties: {
+    model: {
+      name: embeddingModel
+      format: 'OpenAI'
     }
   }
-]
+}

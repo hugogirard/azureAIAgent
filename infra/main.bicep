@@ -25,7 +25,7 @@ param publisherName string
   'gpt-4.1-mini'
   'model-router'
 ])
-param chatCompletionModels array
+param chatCompletionModel string
 
 @description('The embedding model to deploy, be sure its supported in the specific region')
 @allowed([
@@ -33,7 +33,7 @@ param chatCompletionModels array
   'text-embedding-3-small'
   'text-embedding-3-large'
 ])
-param embeddingModels array
+param embeddingModel string
 
 @description('The SKU of APIM')
 @allowed([
@@ -72,8 +72,8 @@ module foundry 'ai/foundry.bicep' = {
   scope: rg
   params: {
     location: location
-    chatCompletionModels: chatCompletionModels
-    embeddingModels: embeddingModels
-    suffix: suffix
+    chatCompletionModel: chatCompletionModel
+    embeddingModel: embeddingModel
+    suffix: resourceSuffix
   }
 }

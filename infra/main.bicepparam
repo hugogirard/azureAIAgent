@@ -12,10 +12,6 @@ param resourceGroupName = 'rg-genai-demo'
 
 param suffix = ''
 
-param chatCompletionModels = [
-  'gpt-4o-mini'
-]
+param chatCompletionModel = 'gpt-4o-mini'
 
-param embeddingModels = [
-  'text-embedding-3-small'
-]
+param embeddingModel = 'text-embedding-3-small'
