@@ -82,13 +82,13 @@ module foundry 'ai/foundry.bicep' = {
 }
 
 /* APIM need with managed identity access to Foundry */
-module rbac 'rbac/foundry.bicep' = {
-  scope: rg
-  params: {
-    foundryResourceId: foundry.outputs.resourceId
-    systemAssignedMIPrincipalId: apim.outputs.systemAssignedMIPrincipalId
-  }
-}
+// module rbac 'rbac/foundry.bicep' = {
+//   scope: rg
+//   params: {
+//     foundryResourceId: foundry.outputs.resourceId
+//     systemAssignedMIPrincipalId: apim.outputs.systemAssignedMIPrincipalId
+//   }
+// }
 
 @description('The name of APIM resource')
 output apimResourceName string = apim.outputs.name
