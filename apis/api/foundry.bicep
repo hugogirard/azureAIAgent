@@ -26,7 +26,7 @@ resource foundry 'Microsoft.ApiManagement/service/apis@2024-06-01-preview' = {
     }
     isCurrent: true
     format: 'openapi-link'
-    value: loadTextContent('./openapi.final.yaml')
+    value: 'https://raw.githubusercontent.com/hugogirard/genAiGatewayDemo/refs/heads/main/apis/api/openapi.yaml'
   }
 }
 

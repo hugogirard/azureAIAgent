@@ -74,3 +74,5 @@ resource embeddingModelDeployment 'Microsoft.CognitiveServices/accounts/deployme
     }
   }
 }
+
+output resourceId string = aiFoundry.id

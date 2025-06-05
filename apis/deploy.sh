@@ -30,7 +30,7 @@ OPENAI_LANGUAGE_MODEL_API=$(echo "$AISERVICES_ACCOUNT" | jq -r '.[0].properties.
 echo "AI Foundry API endpoint: $AI_FOUNDRY_API"
 echo "OpenAI Language Model Instance API endpoint: $OPENAI_LANGUAGE_MODEL_API"
 
-sed -e 's/__title__/foundry/' -e "s|__apimName__|$APIM_NAME|g" ./api/openapi.yaml > ./api/openapi.final.yaml
+#sed -e 's/__title__/foundry/' -e "s|__apimName__|$APIM_NAME|g" ./api/openapi.yaml > ./api/openapi.final.yaml
 
 az deployment group create \
   --resource-group "$RESOURCE_GROUP_NAME" \

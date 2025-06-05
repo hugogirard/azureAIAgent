@@ -54,13 +54,16 @@ resource rg 'Microsoft.Resources/resourceGroups@2025-04-01' = {
 var resourceSuffix = empty(suffix) ? uniqueString(rg.id) : suffix
 
 /* API Management instace */
-module service 'br/public:avm/res/api-management/service:0.9.1' = {
+module apim 'br/public:avm/res/api-management/service:0.9.1' = {
   scope: rg
   params: {
-    // Required parameters
+    // Required parameters    
     name: 'api-${resourceSuffix}'
     publisherEmail: publisherEmail
     publisherName: publisherName
+    managedIdentities: {
+      systemAssigned: true
+    }
     // Non-required parameters
     enableDeveloperPortal: true
     sku: apimSku
@@ -75,5 +78,14 @@ module foundry 'ai/foundry.bicep' = {
     chatCompletionModel: chatCompletionModel
     embeddingModel: embeddingModel
     suffix: resourceSuffix
+  }
+}
+
+/* APIM need with managed identity access to Foundry */
+module rbac 'rbac/foundry.bicep' = {
+  scope: rg
+  params: {
+    foundryResourceId: foundry.outputs.resourceId
+    systemAssignedMIPrincipalId: apim.outputs.systemAssignedMIPrincipalId
   }
 }
