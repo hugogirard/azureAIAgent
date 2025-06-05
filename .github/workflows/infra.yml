@@ -27,8 +27,8 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       # Temp fix
-      - name: bicep tmp fix
-        run: az config set bicep.use_binary_from_path=false
+    #   - name: bicep tmp fix
+    #     run: az config set bicep.use_binary_from_path=false
       
       - name: deploy
         id: createResources
@@ -41,8 +41,8 @@ jobs:
           template: ./infra/main.bicep
           parameters: ./infra/main.bicepparam
 
-      - name: print
-        run: echo ${{ steps.createResources.outputs.foundryEndpoint }}
+    #   - name: print
+    #     run: echo ${{ steps.createResources.outputs.foundryEndpoint }}
 
     #   - uses: gliech/create-github-secret-action@v1
     #     with:
