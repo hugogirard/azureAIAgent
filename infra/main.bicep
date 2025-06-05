@@ -81,6 +81,64 @@ module foundry 'ai/foundry.bicep' = {
   }
 }
 
+/* AI Search BYOD */
+module search 'br/public:avm/res/search/search-service:0.7.2' = {
+  scope: rg
+  params: {
+    disableLocalAuth: true
+    name: 'search-${suffix}'
+    location: location
+    managedIdentities: {
+      systemAssigned: true
+    }
+    partitionCount: 1
+    replicaCount: 1
+    sku: 'standard'
+  }
+}
+
+/* CosmosDB needed to associate Thread to logged user */
+
+module cosmosdb 'br/public:avm/res/document-db/database-account:0.12.0' = {
+  scope: rg
+  params: {
+    name: 'cosmosdb-${suffix}'
+    location: location
+    enableMultipleWriteLocations: false
+    automaticFailover: false
+    disableLocalAuth: true
+    networkRestrictions: {
+      publicNetworkAccess: 'Enabled'
+    }
+    locations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: false
+        locationName: location
+      }
+    ]
+    sqlDatabases: [
+      {
+        name: 'chat'
+        containers: [
+          {
+            name: 'thread'
+            indexingPolicy: {
+              automatic: true
+            }
+            paths: [
+              '/username'
+            ]
+            kind: 'MultiHash'
+          }
+        ]
+        throughput: 1000
+        autoscaleSettingsMaxThroughput: 1000
+      }
+    ]
+  }
+}
+
 /* APIM need with managed identity access to Foundry */
 // module rbac 'rbac/foundry.bicep' = {
 //   scope: rg

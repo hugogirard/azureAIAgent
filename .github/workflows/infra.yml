@@ -40,7 +40,9 @@ jobs:
           deploymentName:  ${{ github.run_id }}
           template: ./infra/main.bicep
           parameters: ./infra/main.bicepparam
-                  
+
+      - name: print
+        run: echo ${{ steps.createResources.outputs.foundryEndpoint }}
 
     #   - uses: gliech/create-github-secret-action@v1
     #     with:
