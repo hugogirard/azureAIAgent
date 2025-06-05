@@ -89,3 +89,9 @@ module rbac 'rbac/foundry.bicep' = {
     systemAssignedMIPrincipalId: apim.outputs.systemAssignedMIPrincipalId
   }
 }
+
+@description('The name of APIM resource')
+output apimResourceName string = apim.outputs.name
+
+@description('The endpoint of Azure AI Foundry')
+output foundryEndpoint string = foundry.outputs.endpoint
