@@ -1,0 +1,162 @@
+[
+    {
+        "name": "Sol y Mar Resort",
+        "location": "Cancún, Mexico",
+        "description": "A beachfront resort with stunning ocean views and all-inclusive amenities.",
+        "beachClose": true,
+        "rating": 4.8,
+        "pricePerNight": 275,
+        "reviews": [
+            {
+                "user": "BeachLover",
+                "pros": [
+                    "Amazing beach access",
+                    "Great food"
+                ],
+                "cons": [
+                    "Crowded during holidays"
+                ],
+                "review": "Loved the beach and the food. It gets crowded during peak season."
+            },
+            {
+                "user": "FamilyTrip",
+                "pros": [
+                    "Family-friendly",
+                    "Fun activities"
+                ],
+                "cons": [
+                    "Noisy pool area"
+                ],
+                "review": "Perfect for families, but the pool can be noisy."
+            }
+        ]
+    },
+    {
+        "name": "Casa Colonial Boutique Hotel",
+        "location": "Oaxaca, Mexico",
+        "description": "A charming boutique hotel in the heart of Oaxaca, blending tradition with comfort.",
+        "beachClose": false,
+        "rating": 4.6,
+        "pricePerNight": 160,
+        "reviews": [
+            {
+                "user": "CultureSeekerMX",
+                "pros": [
+                    "Central location",
+                    "Beautiful decor"
+                ],
+                "cons": [
+                    "Limited parking"
+                ],
+                "review": "Loved the decor and location. Parking was a challenge."
+            },
+            {
+                "user": "SoloExplorer",
+                "pros": [
+                    "Friendly staff",
+                    "Quiet rooms"
+                ],
+                "cons": [
+                    "Small breakfast selection"
+                ],
+                "review": "Staff was very helpful. Breakfast options could be better."
+            }
+        ]
+    },
+    {
+        "name": "Sierra Azul Lodge",
+        "location": "Monterrey, Mexico",
+        "description": "A mountain lodge offering breathtaking views and outdoor adventures.",
+        "beachClose": false,
+        "rating": 4.7,
+        "pricePerNight": 190,
+        "reviews": [
+            {
+                "user": "HikerMX",
+                "pros": [
+                    "Great hiking trails",
+                    "Cozy atmosphere"
+                ],
+                "cons": [
+                    "Far from city center"
+                ],
+                "review": "Perfect for hiking lovers. It's a bit remote."
+            },
+            {
+                "user": "NatureFan",
+                "pros": [
+                    "Beautiful scenery",
+                    "Peaceful environment"
+                ],
+                "cons": [
+                    "Limited dining options"
+                ],
+                "review": "Loved the peace and views. Not many places to eat nearby."
+            }
+        ]
+    },
+    {
+        "name": "Plaza Fiesta Hotel",
+        "location": "Mexico City, Mexico",
+        "description": "A modern hotel in downtown Mexico City, close to major attractions.",
+        "beachClose": false,
+        "rating": 4.5,
+        "pricePerNight": 150,
+        "reviews": [
+            {
+                "user": "CityTraveler",
+                "pros": [
+                    "Central location",
+                    "Clean rooms"
+                ],
+                "cons": [
+                    "Traffic noise"
+                ],
+                "review": "Great location for sightseeing. Some noise from the street."
+            },
+            {
+                "user": "BusinessGuest",
+                "pros": [
+                    "Fast Wi-Fi",
+                    "Good breakfast"
+                ],
+                "cons": [
+                    "Small gym"
+                ],
+                "review": "Wi-Fi was reliable. Gym is small but functional."
+            }
+        ]
+    },
+    {
+        "name": "Bahía Azul Suites",
+        "location": "Puerto Vallarta, Mexico",
+        "description": "A relaxing suite hotel near the beach, perfect for a tropical getaway.",
+        "beachClose": true,
+        "rating": 4.7,
+        "pricePerNight": 230,
+        "reviews": [
+            {
+                "user": "SunSeeker",
+                "pros": [
+                    "Close to beach",
+                    "Spacious suites"
+                ],
+                "cons": [
+                    "Limited nightlife"
+                ],
+                "review": "Loved being so close to the beach. Not much to do at night."
+            },
+            {
+                "user": "CoupleTraveler",
+                "pros": [
+                    "Romantic setting",
+                    "Great service"
+                ],
+                "cons": [
+                    "No spa"
+                ],
+                "review": "Perfect for couples. Would have liked a spa."
+            }
+        ]
+    }
+]

@@ -1,0 +1,162 @@
+[
+    {
+        "name": "Château Lumière",
+        "location": "Paris, France",
+        "description": "A luxurious hotel in the heart of Paris, blending classic elegance with modern comfort.",
+        "beachClose": false,
+        "rating": 4.8,
+        "pricePerNight": 320,
+        "reviews": [
+            {
+                "user": "ParisExplorer",
+                "pros": [
+                    "Central location",
+                    "Elegant decor"
+                ],
+                "cons": [
+                    "Expensive breakfast"
+                ],
+                "review": "Loved the location and the beautiful interiors. Breakfast was a bit pricey."
+            },
+            {
+                "user": "RomanticTraveler",
+                "pros": [
+                    "Romantic atmosphere",
+                    "Attentive staff"
+                ],
+                "cons": [
+                    "Small gym"
+                ],
+                "review": "Perfect for couples. Staff was wonderful, but the gym is small."
+            }
+        ]
+    },
+    {
+        "name": "Azur Coast Resort",
+        "location": "Nice, France",
+        "description": "A beachfront resort on the French Riviera, offering stunning sea views and luxury amenities.",
+        "beachClose": true,
+        "rating": 4.7,
+        "pricePerNight": 290,
+        "reviews": [
+            {
+                "user": "BeachFanFR",
+                "pros": [
+                    "Amazing beach access",
+                    "Great pool"
+                ],
+                "cons": [
+                    "Crowded in summer"
+                ],
+                "review": "Loved the beach and pool. Gets crowded during peak season."
+            },
+            {
+                "user": "FamilyHoliday",
+                "pros": [
+                    "Family-friendly",
+                    "Spacious rooms"
+                ],
+                "cons": [
+                    "Limited parking"
+                ],
+                "review": "Great for families. Parking can be a challenge."
+            }
+        ]
+    },
+    {
+        "name": "Mont Blanc Chalet",
+        "location": "Chamonix, France",
+        "description": "A cozy mountain chalet perfect for ski lovers and nature enthusiasts.",
+        "beachClose": false,
+        "rating": 4.6,
+        "pricePerNight": 210,
+        "reviews": [
+            {
+                "user": "SkiLoverFR",
+                "pros": [
+                    "Close to slopes",
+                    "Beautiful views"
+                ],
+                "cons": [
+                    "No spa"
+                ],
+                "review": "Perfect for skiing. Would have liked a spa."
+            },
+            {
+                "user": "NatureWalker",
+                "pros": [
+                    "Peaceful environment",
+                    "Friendly staff"
+                ],
+                "cons": [
+                    "Remote location"
+                ],
+                "review": "Very peaceful and staff is great. It's a bit remote."
+            }
+        ]
+    },
+    {
+        "name": "Provence Garden Inn",
+        "location": "Avignon, France",
+        "description": "A charming inn surrounded by lavender fields, ideal for a relaxing countryside escape.",
+        "beachClose": false,
+        "rating": 4.5,
+        "pricePerNight": 180,
+        "reviews": [
+            {
+                "user": "CountrysideFan",
+                "pros": [
+                    "Beautiful gardens",
+                    "Quiet atmosphere"
+                ],
+                "cons": [
+                    "Limited dining options"
+                ],
+                "review": "Loved the gardens and peaceful vibe. Not many restaurants nearby."
+            },
+            {
+                "user": "SoloTravelerFR",
+                "pros": [
+                    "Cozy rooms",
+                    "Helpful staff"
+                ],
+                "cons": [
+                    "No pool"
+                ],
+                "review": "Rooms are cozy and staff is helpful. Missed having a pool."
+            }
+        ]
+    },
+    {
+        "name": "Lyon Urban Suites",
+        "location": "Lyon, France",
+        "description": "A modern hotel in downtown Lyon, offering comfort and convenience for city travelers.",
+        "beachClose": false,
+        "rating": 4.4,
+        "pricePerNight": 160,
+        "reviews": [
+            {
+                "user": "CityVisitor",
+                "pros": [
+                    "Central location",
+                    "Modern design"
+                ],
+                "cons": [
+                    "Small rooms"
+                ],
+                "review": "Great location and modern feel. Rooms are a bit small."
+            },
+            {
+                "user": "FoodieFR",
+                "pros": [
+                    "Excellent breakfast",
+                    "Clean rooms"
+                ],
+                "cons": [
+                    "No gym"
+                ],
+                "review": "Breakfast was excellent and rooms were clean. Missed having a gym."
+            }
+        ]
+    }
+]
