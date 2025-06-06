@@ -15,3 +15,5 @@ param suffix = ''
 param chatCompletionModel = 'gpt-4o-mini'
 
 param embeddingModel = 'text-embedding-3-small'
+
+param userObjectId = '307779dd-2bab-46a1-826a-f073d039af49'

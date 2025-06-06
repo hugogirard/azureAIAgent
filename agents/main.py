@@ -45,7 +45,7 @@ for agent in agents:
                 model=agent.model,
                 name=agent.name,
                 description=agent.description,
-                instruction=agent.description
+                instruction=agent.description                            
             )
             print(f"Agent ${agent.name} created with ID: ${created_agent.id}")            
             pass

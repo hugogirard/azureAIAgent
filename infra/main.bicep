@@ -44,6 +44,8 @@ param embeddingModel string
 ])
 param apimSku string
 
+param userObjectId string
+
 /* Create the resource group */
 resource rg 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
@@ -81,12 +83,23 @@ module foundry 'ai/foundry.bicep' = {
   }
 }
 
+/* OpenAI needed for indexation only for the demo */
+
+module openai 'ai/openai.bicep' = {
+  scope: rg
+  params: {
+    location: location
+    suffix: resourceSuffix
+  }
+}
+
 /* AI Search BYOD */
 module search 'br/public:avm/res/search/search-service:0.7.2' = {
   scope: rg
+  name: 'search'
   params: {
     disableLocalAuth: true
-    name: 'search-${suffix}'
+    name: 'search${replace(resourceSuffix,'-','')}'
     location: location
     managedIdentities: {
       systemAssigned: true
@@ -102,7 +115,7 @@ module search 'br/public:avm/res/search/search-service:0.7.2' = {
 module cosmosdb 'br/public:avm/res/document-db/database-account:0.12.0' = {
   scope: rg
   params: {
-    name: 'cosmosdb-${suffix}'
+    name: 'cos${replace(resourceSuffix,'-','')}'
     location: location
     enableMultipleWriteLocations: false
     automaticFailover: false
@@ -139,14 +152,46 @@ module cosmosdb 'br/public:avm/res/document-db/database-account:0.12.0' = {
   }
 }
 
+/* Storage needed for the upload of the dataset */
+module storage 'br/public:avm/res/storage/storage-account:0.19.0' = {
+  scope: rg
+  params: {
+    name: 'str${replace(resourceSuffix,'-','')}'
+    location: location
+    allowBlobPublicAccess: true
+    blobServices: {
+      containers: [
+        {
+          name: 'upload'
+        }
+      ]
+    }
+    allowSharedKeyAccess: false
+    publicNetworkAccess: 'Enabled'
+  }
+}
+
 /* APIM need with managed identity access to Foundry */
-// module rbac 'rbac/foundry.bicep' = {
-//   scope: rg
-//   params: {
-//     foundryResourceId: foundry.outputs.resourceId
-//     systemAssignedMIPrincipalId: apim.outputs.systemAssignedMIPrincipalId
-//   }
-// }
+module rbac 'rbac/foundry.bicep' = {
+  scope: rg
+  params: {
+    foundryResourceId: foundry.outputs.resourceId
+    apimSystemAssignedMIPrincipalId: apim.outputs.systemAssignedMIPrincipalId
+    openAIResourceId: openai.outputs.resourceId
+    aiSearchSystemAssignedMIPrincipalId: search.outputs.systemAssignedMIPrincipalId
+  }
+}
+
+module rbacUser 'rbac/user.rbac.bicep' = {
+  scope: rg
+  params: {
+    cosmosDbResourceName: cosmosdb.outputs.name
+    openAIResourceId: foundry.outputs.resourceId
+    searchResourceId: search.outputs.resourceId
+    storageResourceId: storage.outputs.resourceId
+    userObjectId: userObjectId
+  }
+}
 
 @description('The name of APIM resource')
 output apimResourceName string = apim.outputs.name

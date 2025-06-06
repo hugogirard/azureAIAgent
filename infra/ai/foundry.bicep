@@ -76,4 +76,5 @@ resource embeddingModelDeployment 'Microsoft.CognitiveServices/accounts/deployme
 }
 
 output resourceId string = aiFoundry.id
+output resourceName string = aiFoundry.name
 output endpoint string = aiFoundry.properties.endpoint

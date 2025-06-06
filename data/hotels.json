@@ -1,0 +1,422 @@
+[
+    {
+        "name": "Tropical Haven Resort",
+        "location": "Maui, Hawaii",
+        "description": "A paradise retreat with breathtaking views and exceptional service.",
+        "beachClose": true,
+        "rating": 4.9,
+        "pricePerNight": 300,
+        "reviews": [
+            {
+                "user": "IslandExplorer",
+                "pros": [
+                    "Stunning views",
+                    "Excellent service",
+                    "Delicious food"
+                ],
+                "cons": [
+                    "High price"
+                ],
+                "review": "This resort is worth every penny. The views are incredible, and the service is top-notch."
+            },
+            {
+                "user": "BeachLover",
+                "pros": [
+                    "Close to the beach",
+                    "Relaxing atmosphere"
+                ],
+                "cons": [
+                    "Limited nightlife"
+                ],
+                "review": "Perfect for a relaxing getaway. The beach is just steps away!"
+            }
+        ]
+    },
+    {
+        "name": "Mountain Peak Lodge",
+        "location": "Aspen, Colorado",
+        "description": "A cozy lodge nestled in the mountains, ideal for skiing enthusiasts.",
+        "beachClose": false,
+        "rating": 4.6,
+        "pricePerNight": 200,
+        "reviews": [
+            {
+                "user": "SkiFanatic",
+                "pros": [
+                    "Great location",
+                    "Comfortable rooms"
+                ],
+                "cons": [
+                    "No spa"
+                ],
+                "review": "Perfect for a ski trip. The lodge is close to the slopes and very comfortable."
+            },
+            {
+                "user": "NatureLover",
+                "pros": [
+                    "Beautiful scenery",
+                    "Friendly staff"
+                ],
+                "cons": [
+                    "Limited dining options"
+                ],
+                "review": "Loved the mountain views and the friendly staff. Dining options could be better."
+            }
+        ]
+    },
+    {
+        "name": "City Lights Hotel",
+        "location": "New York City, USA",
+        "description": "A modern hotel in the heart of the city, offering convenience and luxury.",
+        "beachClose": false,
+        "rating": 4.8,
+        "pricePerNight": 280,
+        "reviews": [
+            {
+                "user": "UrbanExplorer",
+                "pros": [
+                    "Central location",
+                    "Stylish design"
+                ],
+                "cons": [
+                    "Noisy at night"
+                ],
+                "review": "Great place to stay in NYC. The location is unbeatable, but it can be noisy."
+            },
+            {
+                "user": "BusinessTraveler",
+                "pros": [
+                    "Convenient location",
+                    "Excellent amenities"
+                ],
+                "cons": [
+                    "Expensive"
+                ],
+                "review": "Perfect for business trips. The amenities are excellent, though it's pricey."
+            }
+        ]
+    },
+    {
+        "name": "Desert Oasis Resort",
+        "location": "Phoenix, Arizona",
+        "description": "A tranquil resort in the desert, offering relaxation and luxury.",
+        "beachClose": false,
+        "rating": 4.7,
+        "pricePerNight": 230,
+        "reviews": [
+            {
+                "user": "RelaxationExpert",
+                "pros": [
+                    "Peaceful environment",
+                    "Great spa"
+                ],
+                "cons": [
+                    "Hot weather"
+                ],
+                "review": "Loved the peaceful atmosphere and the spa. The desert heat can be intense."
+            },
+            {
+                "user": "AdventureSeeker",
+                "pros": [
+                    "Unique location",
+                    "Friendly staff"
+                ],
+                "cons": [
+                    "Limited activities"
+                ],
+                "review": "The resort is unique and the staff is very friendly. More activities would be nice."
+            }
+        ]
+    },
+    {
+        "name": "Lakeview Retreat",
+        "location": "Lake Tahoe, USA",
+        "description": "A charming retreat by the lake, perfect for nature lovers.",
+        "beachClose": true,
+        "rating": 4.5,
+        "pricePerNight": 190,
+        "reviews": [
+            {
+                "user": "NatureFan",
+                "pros": [
+                    "Beautiful lake views",
+                    "Quiet atmosphere"
+                ],
+                "cons": [
+                    "Small rooms"
+                ],
+                "review": "The lake views are stunning, and the atmosphere is very relaxing."
+            },
+            {
+                "user": "FamilyTraveler",
+                "pros": [
+                    "Family-friendly",
+                    "Great location"
+                ],
+                "cons": [
+                    "Limited dining options"
+                ],
+                "review": "Perfect for a family vacation. The location is great, but dining options are limited."
+            }
+        ]
+    },
+    {
+        "name": "Golden Sands Resort",
+        "location": "Dubai, UAE",
+        "description": "A luxurious resort with world-class amenities and stunning architecture.",
+        "beachClose": true,
+        "rating": 4.9,
+        "pricePerNight": 350,
+        "reviews": [
+            {
+                "user": "LuxuryLover",
+                "pros": [
+                    "Amazing architecture",
+                    "Exceptional service"
+                ],
+                "cons": [
+                    "Expensive"
+                ],
+                "review": "The resort is absolutely stunning. The service is exceptional, but it's pricey."
+            },
+            {
+                "user": "BeachFanatic",
+                "pros": [
+                    "Beautiful beach",
+                    "Great facilities"
+                ],
+                "cons": [
+                    "Crowded"
+                ],
+                "review": "Loved the beach and the facilities. It can get crowded, though."
+            }
+        ]
+    },
+    {
+        "name": "Forest Hideaway",
+        "location": "Vancouver, Canada",
+        "description": "A secluded retreat surrounded by lush forests, ideal for relaxation.",
+        "beachClose": false,
+        "rating": 4.6,
+        "pricePerNight": 210,
+        "reviews": [
+            {
+                "user": "NatureLover",
+                "pros": [
+                    "Peaceful location",
+                    "Beautiful surroundings"
+                ],
+                "cons": [
+                    "Limited Wi-Fi"
+                ],
+                "review": "Perfect for a nature getaway. The surroundings are beautiful, but Wi-Fi is limited."
+            },
+            {
+                "user": "SoloTraveler",
+                "pros": [
+                    "Quiet atmosphere",
+                    "Friendly staff"
+                ],
+                "cons": [
+                    "Remote location"
+                ],
+                "review": "Great for a solo trip. The atmosphere is quiet, but it's quite remote."
+            }
+        ]
+    },
+    {
+        "name": "Island Escape Resort",
+        "location": "Bora Bora, French Polynesia",
+        "description": "A luxurious resort on a private island, offering unparalleled beauty and tranquility.",
+        "beachClose": true,
+        "rating": 5.0,
+        "pricePerNight": 500,
+        "reviews": [
+            {
+                "user": "ParadiseSeeker",
+                "pros": [
+                    "Private island",
+                    "Stunning views"
+                ],
+                "cons": [
+                    "Very expensive"
+                ],
+                "review": "This resort is paradise. The private island and views are breathtaking."
+            },
+            {
+                "user": "LuxuryTraveler",
+                "pros": [
+                    "Exceptional service",
+                    "Beautiful design"
+                ],
+                "cons": [
+                    "High cost"
+                ],
+                "review": "The service and design are exceptional. It's very expensive, but worth it."
+            }
+        ]
+    },
+    {
+        "name": "Snowy Peaks Lodge",
+        "location": "Whistler, Canada",
+        "description": "A cozy lodge perfect for winter sports enthusiasts.",
+        "beachClose": false,
+        "rating": 4.7,
+        "pricePerNight": 220,
+        "reviews": [
+            {
+                "user": "SkiLover",
+                "pros": [
+                    "Close to slopes",
+                    "Comfortable rooms"
+                ],
+                "cons": [
+                    "No pool"
+                ],
+                "review": "Great for skiing. The rooms are comfortable, but there's no pool."
+            },
+            {
+                "user": "WinterFan",
+                "pros": [
+                    "Beautiful location",
+                    "Friendly staff"
+                ],
+                "cons": [
+                    "Limited dining options"
+                ],
+                "review": "Loved the location and staff. Dining options could be better."
+            }
+        ]
+    },
+    {
+        "name": "Coastal Bliss Resort",
+        "location": "Malibu, California",
+        "description": "A beachfront resort offering stunning ocean views and luxurious amenities.",
+        "beachClose": true,
+        "rating": 4.8,
+        "pricePerNight": 280,
+        "reviews": [
+            {
+                "user": "OceanFan",
+                "pros": [
+                    "Amazing ocean views",
+                    "Great service"
+                ],
+                "cons": [
+                    "Expensive"
+                ],
+                "review": "The ocean views are incredible, and the service is excellent."
+            },
+            {
+                "user": "BeachLover",
+                "pros": [
+                    "Close to the beach",
+                    "Relaxing atmosphere"
+                ],
+                "cons": [
+                    "Crowded during weekends"
+                ],
+                "review": "Perfect for a beach vacation. It can get crowded on weekends."
+            }
+        ]
+    }
+    {
+        "name": "Ocean Breeze Resort",
+        "location": "Cancún, Mexico",
+        "description": "A luxurious beachfront resort offering stunning ocean views and world-class amenities.",
+        "beachClose": true,
+        "rating": 4.8,
+        "pricePerNight": 250,
+        "reviews": [
+            {
+                "user": "TravelLover123",
+                "pros": [
+                    "Amazing ocean view",
+                    "Friendly staff",
+                    "Clean rooms"
+                ],
+                "cons": [
+                    "Expensive food options"
+                ],
+                "review": "The resort was absolutely beautiful, and the staff made our stay unforgettable. Highly recommend!"
+            },
+            {
+                "user": "BeachFanatic89",
+                "pros": [
+                    "Close to the beach",
+                    "Great pool area"
+                ],
+                "cons": [
+                    "Crowded during peak season"
+                ],
+                "review": "Loved the proximity to the beach and the pool area was fantastic. It can get a bit crowded though."
+            }
+        ]
+    },
+    {
+        "name": "Sunset Paradise Hotel",
+        "location": "Playa del Carmen, Mexico",
+        "description": "A cozy hotel located near the beach, perfect for a relaxing getaway.",
+        "beachClose": true,
+        "rating": 4.5,
+        "pricePerNight": 180,
+        "reviews": [
+            {
+                "user": "RelaxationGuru",
+                "pros": [
+                    "Quiet atmosphere",
+                    "Affordable price",
+                    "Close to attractions"
+                ],
+                "cons": [
+                    "Limited dining options"
+                ],
+                "review": "This hotel was perfect for a peaceful vacation. The price was great, and it was close to everything we wanted to see."
+            },
+            {
+                "user": "AdventureSeeker",
+                "pros": [
+                    "Great location",
+                    "Helpful staff"
+                ],
+                "cons": [
+                    "Small rooms"
+                ],
+                "review": "The location was ideal for exploring the area, and the staff was very accommodating. The rooms are a bit small but manageable."
+            }
+        ]
+    },
+    {
+        "name": "Azure Sands Resort",
+        "location": "Tulum, Mexico",
+        "description": "An eco-friendly resort surrounded by nature, offering a serene escape from the city.",
+        "beachClose": true,
+        "rating": 4.7,
+        "pricePerNight": 220,
+        "reviews": [
+            {
+                "user": "NatureLover",
+                "pros": [
+                    "Eco-friendly",
+                    "Beautiful surroundings",
+                    "Peaceful environment"
+                ],
+                "cons": [
+                    "Limited Wi-Fi"
+                ],
+                "review": "The resort was a dream for nature lovers. The peaceful environment was exactly what I needed to unwind."
+            },
+            {
+                "user": "DigitalNomad",
+                "pros": [
+                    "Unique design",
+                    "Close to the beach"
+                ],
+                "cons": [
+                    "Weak internet connection"
+                ],
+                "review": "I loved the unique design of the resort and its proximity to the beach. However, the internet connection could be improved."
+            }
+        ]
+    }
+]
