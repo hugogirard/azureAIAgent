@@ -60,7 +60,7 @@ module apim 'br/public:avm/res/api-management/service:0.9.1' = {
   scope: rg
   params: {
     // Required parameters    
-    name: 'api-${resourceSuffix}'
+    name: 'apim-${resourceSuffix}'
     publisherEmail: publisherEmail
     publisherName: publisherName
     managedIdentities: {
@@ -159,6 +159,9 @@ module storage 'br/public:avm/res/storage/storage-account:0.19.0' = {
     name: 'str${replace(resourceSuffix,'-','')}'
     location: location
     allowBlobPublicAccess: true
+    networkAcls: {
+      defaultAction: 'Allow'
+    }
     blobServices: {
       containers: [
         {
@@ -179,6 +182,9 @@ module rbac 'rbac/foundry.bicep' = {
     apimSystemAssignedMIPrincipalId: apim.outputs.systemAssignedMIPrincipalId
     openAIResourceId: openai.outputs.resourceId
     aiSearchSystemAssignedMIPrincipalId: search.outputs.systemAssignedMIPrincipalId
+    storageResourceId: storage.outputs.resourceId
+    aiFoundrySystemAssignedMIPrincipalId: foundry.outputs.systemAssignedMIPrincipalId
+    aiSearchResourceId: search.outputs.systemAssignedMIPrincipalId
   }
 }
 

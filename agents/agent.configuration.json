@@ -1,9 +1,0 @@
-[
-    {
-        "name": "contosohotel",
-        "model": "gpt-4o-mini",
-        "description": "The Contoso Hotel Agent",
-        "instruction": "You are an agent that answer the Contoso Hotel data",
-        "tools": []
-    }
-]

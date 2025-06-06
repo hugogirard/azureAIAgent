@@ -1,9 +1,14 @@
-from typing import List
-from pydantic import BaseModel
+from dataclasses import dataclass, field
+from typing import Dict, Optional
 
-class AgentConfiguration(BaseModel):
+@dataclass
+class AgentConfiguration:
     name: str
     model: str
     description: str
     instruction: str
-    tools: list    
+    tool_resource: Optional[any] = None
+    tools: Optional[any] = None
+    temperature: Optional[float] = None
+    top_p: Optional[float] = None
+    metadata: Optional[Dict[str, str]] = field(default_factory=dict)
