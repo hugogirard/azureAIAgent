@@ -1,0 +1,8 @@
+aiohttp==3.11.14
+azure-cosmos==4.9.0
+fastapi==0.115.8
+fastapi-cli==0.0.7
+gunicorn==23.0.0
+python-dotenv==1.0.1
+azure-identity==1.19.0
+azure-ai-projects==1.0.0b11
