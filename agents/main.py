@@ -6,8 +6,11 @@ from models.agent import AgentConfiguration
 from typing import List
 from utility import Utility
 from dotenv import load_dotenv
+from services.agent_repository import AgentRepository
 
 load_dotenv(override=True)
+
+agent_repository = AgentRepository()
 
 # Be sure the environment variable is set in the GitHub repository
 project_endpoint = os.environ["PROJECT_ENDPOINT"]
@@ -53,6 +56,8 @@ for agent in agents:
 for agent_conf in agents_configuration:        
    # Find existing agent by name
     existing_agent = next((a for a in azure_agents if a["name"] == agent_conf.name), None)
+    agent_id: str = None
+    update_agent: bool = False
 
     if existing_agent:
         if overwrite:
@@ -67,10 +72,12 @@ for agent_conf in agents_configuration:
                 tool_resources=agent_conf.tool_resource
 
             )
-            print(f"Agent ${agent.name} created with ID: ${created_agent.id}")            
+            print(f"Agent ${agent_conf.name} created with ID: ${created_agent.id}")     
+            update_agent = True
+            agent_id = created_agent.id
             pass
         else:    
-            print(f"Agent {agent.name} already exists. Skipping creation.")            
+            print(f"Agent {agent_conf.name} already exists. Skipping creation.")            
     else:
         created_agent = project_client.agents.create_agent(
             model=agent_conf.model,
@@ -80,4 +87,10 @@ for agent_conf in agents_configuration:
             tools=agent_conf.tools,
             tool_resources=agent_conf.tool_resource     
         )
-        print(f"Agent ${agent_conf.name} created with ID: ${created_agent.id}")
+        print(f"Agent ${agent_conf.name} created with ID: ${created_agent.id}")  
+        update_agent = True
+        agent_id = created_agent.id
+
+    if update_agent:
+        update_agent = False
+        agent_repository.upsert_agent(agent_conf.name,agent_id)

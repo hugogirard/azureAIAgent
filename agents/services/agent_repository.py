@@ -4,6 +4,7 @@ import os
 
 class AgentRepository():
     def __init__(self):
+      
       credential = DefaultAzureCredential()
       cosmos_client = CosmosClient(url=os.getenv('COSMOS_DB_ENDPOINT'), 
                                    credential=credential)    
@@ -11,3 +12,10 @@ class AgentRepository():
       db = cosmos_client.get_database_client(os.getenv('COSMOS_DATABASE'))
       
       self.container = db.get_container_client(os.getenv('COSMOS_CONTAINER_AGENT'))       
+
+    def upsert_agent(self, name: str, id: str) -> None:                
+        self.container.upsert_item({
+           'id': id,
+           'name': name,
+           'businessunit': 'contoso'
+        })        
