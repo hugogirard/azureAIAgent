@@ -144,6 +144,16 @@ module cosmosdb 'br/public:avm/res/document-db/database-account:0.12.0' = {
             ]
             kind: 'MultiHash'
           }
+          {
+            name: 'agent'
+            indexingPolicy: {
+              automatic: true
+            }
+            paths: [
+              '/businessunit'
+            ]
+            kind: 'MultiHash'
+          }
         ]
         throughput: 1000
         autoscaleSettingsMaxThroughput: 1000
