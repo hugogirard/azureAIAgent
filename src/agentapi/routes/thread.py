@@ -66,8 +66,8 @@ async def new_message(new_message:NewMessage,
          logger.error(f"Run status failed: ${run.last_error.message}")
          raise HTTPException(status_code=500, detail='Internal Server Error')              
 
-      messages = project_client.agents.messages.list(thread_id=new_message.thread_id,
-                                                     limit=1, # Here we return only the last message
+      messages = project_client.agents.messages.list(thread_id=new_message.thread_id,                                                     
+                                                     limit=10,
                                                      order=ListSortOrder.ASCENDING)
             
       return await _format_messages(messages, new_message.agent_id)
