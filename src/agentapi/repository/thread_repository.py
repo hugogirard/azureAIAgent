@@ -21,7 +21,7 @@ class ThreadRepository:
         return threads
             
     async def delete(self, id:str, username: str) -> None:
-        query = "SELECT * c WHERE c.id = @id AND c.username = @username"
+        query = "SELECT * FROM c WHERE c.id = @id AND c.username = @username"
         thread = None
         async for item in self.container.query_items(query=query,
                                                      parameters=[{"name": "@id", "value": id},
@@ -32,3 +32,17 @@ class ThreadRepository:
             return
         
         await self.container.delete_item(item, partition_key=username)
+
+    async def delete_all(self, username: str) -> None:
+        operations = []
+        query = "SELECT * FROM c WHERE c.username = @username"
+
+        async for item in self.container.query_items(query=query,
+                                                     parameters=[{"name": "@username", "value": username}]):
+            
+            delete_operation = ("delete", (str(item['id']),))
+            operations.append(delete_operation)
+
+        if operations:
+          partition_key = [username]
+          await self.container.execute_item_batch(batch_operations=operations, partition_key=username)

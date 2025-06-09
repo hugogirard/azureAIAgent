@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends,HTTPException
+from fastapi import APIRouter, Depends,HTTPException,Response
 from typing import Annotated, Dict, List
 from models import (Thread, Message)
 from repository.thread_repository import ThreadRepository
@@ -46,9 +46,38 @@ async def get_all_threads(user_principal_name: Annotated[str, Depends(get_easy_a
      logger.error(err)
      raise HTTPException(status_code=500, detail='Internal Server Error') 
 
-@router.post("/{agent_id}")
-async def new_thread(agent_id: str,
-                     user_principal_name: Annotated[str, Depends(get_easy_auth_token)],                     
+   
+@router.post("/message")
+async def new_message(new_message:NewMessage,                      
+                      project_client: Annotated[AIProjectClient, Depends(get_project_client)],                      
+                      logger: Annotated[Logger, Depends(get_logger)]) -> List[Message]:
+   try:
+      
+      message = await project_client.agents.messages.create(
+         thread_id=new_message.thread_id,
+         role=MessageRole.USER,
+         content=new_message.prompt
+      )
+
+      run = await project_client.agents.runs.create_and_process(thread_id=new_message.thread_id,
+                                                                agent_id=new_message.agent_id)
+      
+      if run.status == RunStatus.FAILED:
+         logger.error(f"Run status failed: ${run.last_error.message}")
+         raise HTTPException(status_code=500, detail='Internal Server Error')              
+
+      messages = project_client.agents.messages.list(thread_id=new_message.thread_id,
+                                                     limit=1, # Here we return only the last message
+                                                     order=ListSortOrder.ASCENDING)
+            
+      return await _format_messages(messages, new_message.agent_id)
+
+   except Exception as err:
+     logger.error(err)
+     raise HTTPException(status_code=500, detail='Internal Server Error') 
+
+@router.post("/")
+async def new_thread(user_principal_name: Annotated[str, Depends(get_easy_auth_token)],                     
                      project_client: Annotated[AIProjectClient, Depends(get_project_client)],
                      thread_repository: Annotated[ThreadRepository, Depends(get_thread_repository)],
                      logger: Annotated[Logger, Depends(get_logger)]) -> str:
@@ -70,36 +99,29 @@ async def new_thread(agent_id: str,
    except Exception as err:
      logger.error(err)
      raise HTTPException(status_code=500, detail='Internal Server Error')          
-   
-@router.post("/message")
-async def new_message(user_principal_name: Annotated[str, Depends(get_easy_auth_token)],
-                      new_message:NewMessage,
-                      project_client: Annotated[AIProjectClient, Depends(get_project_client)],
-                      thread_repository: Annotated[ThreadRepository, Depends(get_thread_repository)],
-                      logger: Annotated[Logger, Depends(get_logger)]) -> List[Message]:
+           
+@router.delete("/all")
+async def delete_all(user_principal_name: Annotated[str, Depends(get_easy_auth_token)],
+                     project_client: Annotated[AIProjectClient, Depends(get_project_client)],
+                     thread_repository: Annotated[ThreadRepository, Depends(get_thread_repository)],
+                     logger: Annotated[Logger, Depends(get_logger)]):
    try:
       
-      message = project_client.agents.messages.create(
-         thread_id=new_message.thread_id,
-         role=MessageRole.USER,
-         content=new_message.prompt
-      )
-
-      run = await project_client.agents.runs.create_and_process(thread_id=new_message.thread_id,
-                                                                agent_id=new_message.agent_id)
+      # Retrieve all threads associated to an user
+      threads = await thread_repository.get(user_principal_name)
       
-      if run.status == RunStatus.FAILED:
-         logger.error(f"Run status failed: ${run.last_error.message}")
-         raise HTTPException(status_code=500, detail='Internal Server Error')              
+      for thread in threads:
+         try:
+            await project_client.agents.threads.delete(thread.id)
+         except Exception:
+            continue # In case someone delete the thread for the Azure Portal
 
-      messages = project_client.agents.messages.list(thread_id=new_message.thread_id,
-                                                     order=ListSortOrder.ASCENDING)
+      await thread_repository.delete_all(user_principal_name)
+
+      return Response(status_code=204)
       
-      return await _format_messages(messages)
-
    except Exception as err:
-     logger.error(err)
-     raise HTTPException(status_code=500, detail='Internal Server Error')            
+      logger.error(err)
 
 async def _format_messages(messages: List[ThreadMessage],agent_id:str) -> List[Message]:
    
