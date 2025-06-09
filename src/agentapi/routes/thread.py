@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends,HTTPException
 from typing import Annotated, Dict, List
-from models import (Agent, Message)
+from models import (Thread, Message)
 from repository.thread_repository import ThreadRepository
 from azure.ai.projects.aio import AIProjectClient
-from azure.ai.agents.aio import AgentsClient
-from azure.ai.agents.models import ThreadMessage
+from azure.ai.agents.models import ThreadMessage, MessageRole, RunStatus
+from request.new_message import NewMessage
 from logging import Logger
 from dependencies import (
    get_thread_repository, 
@@ -17,18 +17,19 @@ router = APIRouter(
     prefix="/thread"
 )
 
-@router.get("/{id}")
-async def get_thread(id: str,
+@router.get("/")
+async def get_thread(thread_id: str,
+                     agent_id: str,
                      logger: Annotated[Logger, Depends(get_logger)],
                      project_client: Annotated[AIProjectClient, Depends(get_project_client)]) -> List[Message]:
-    try:
-      #agent_thread = await project_client.agents.threads.get(id)
-      messages = project_client.agents.messages.list(id)
-      formatted_messages = []
-      async for message in messages:
-        annotation_content = _get_message_and_annotations(message)
+    try: 
+      messages = project_client.agents.messages.list(thread_id)
+      formatted_messages = []            
+      async for message in messages:        
+        annotation_content = _get_message_and_annotations(message)                
         formatted_message = Message(
-           id=message.id,
+           id=message.id,        
+           agent_id=agent_id,
            content=annotation_content['content'],
            annotations=annotation_content['annotations'],
            created_at=message.created_at.astimezone().strftime("%m/%d/%y, %I:%M %p"),  
@@ -44,18 +45,67 @@ async def get_thread(id: str,
 
 @router.get("/all")
 async def get_all_threads(user_principal_name: Annotated[str, Depends(get_easy_auth_token)],
-                          thread_repository: Annotated[ThreadRepository, Depends(get_thread_repository)]) -> List[str]:
+                          thread_repository: Annotated[ThreadRepository, Depends(get_thread_repository)],
+                          logger: Annotated[Logger, Depends(get_logger)]) -> List[str]:
     
-    threads = await thread_repository.get(user_principal_name)
-    return [thread.id for thread in threads]
+   try:
+   
+     threads = await thread_repository.get(user_principal_name)
+     return [thread.id for thread in threads]          
+   
+   except Exception as err:
+     logger.error(err)
+     raise HTTPException(status_code=500, detail='Internal Server Error') 
 
-@router.post("/")
-async def new_thread() -> str:
-    pass
+@router.post("/{agent_id}")
+async def new_thread(agent_id: str,
+                     user_principal_name: Annotated[str, Depends(get_easy_auth_token)],                     
+                     project_client: Annotated[AIProjectClient, Depends(get_project_client)],
+                     thread_repository: Annotated[ThreadRepository, Depends(get_thread_repository)],
+                     logger: Annotated[Logger, Depends(get_logger)]) -> str:
+    
+   try:     
+     
+     # Set the agent to use for this thread
+     await project_client.agents.get_agent(agent_id)
 
+     thread = await project_client.agents.threads.create()
+
+     await thread_repository.insert(Thread(
+        id=thread.id,
+        username=user_principal_name
+     ))
+
+     return thread.id
+   
+   except Exception as err:
+     logger.error(err)
+     raise HTTPException(status_code=500, detail='Internal Server Error')          
+   
 @router.post("/message")
-async def new_message() -> str:
-    pass
+async def new_message(user_principal_name: Annotated[str, Depends(get_easy_auth_token)],
+                      new_message:NewMessage,
+                      project_client: Annotated[AIProjectClient, Depends(get_project_client)],
+                      thread_repository: Annotated[ThreadRepository, Depends(get_thread_repository)],
+                      logger: Annotated[Logger, Depends(get_logger)]) -> str:
+   try:
+
+      message = project_client.agents.messages.create(
+         thread_id=new_message.thread_id,
+         role=MessageRole.USER,
+         content=new_message.prompt
+      )
+
+      run = await project_client.agents.runs.create_and_process(thread_id=new_message.thread_id,
+                                                                agent_id=new_message.agent_id)
+      
+      if run.status == RunStatus.FAILED:
+         logger.error(f"Run status failed: ${run.last_error.message}")
+         raise HTTPException(status_code=500, detail='Internal Server Error')              
+
+   except Exception as err:
+     logger.error(err)
+     raise HTTPException(status_code=500, detail='Internal Server Error')            
 
 def _get_message_and_annotations(message: ThreadMessage) -> Dict:
    annotations = []

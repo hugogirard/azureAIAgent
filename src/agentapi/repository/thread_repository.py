@@ -12,7 +12,7 @@ class ThreadRepository:
 
     async def get(self,username:str) -> List[Thread]:
         threads = []
-        query = "SELECT * c WHERE c.username = @username"
+        query = "SELECT * FROM c WHERE c.username = @username"
         async for item in self.container.query_items(query=query,
                                                      parameters=[{"name": "@username", "value": username}]):
             thread = Thread.model_validate(item)

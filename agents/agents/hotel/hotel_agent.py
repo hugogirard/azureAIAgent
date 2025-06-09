@@ -25,7 +25,7 @@ class HotelAgent(BaseAgent):
        ai_search = AzureAISearchTool(
            index_connection_id=connection_id,
            index_name=index_name,
-           query_type=AzureAISearchQueryType.VECTOR_SEMANTIC_HYBRID,
+           query_type=AzureAISearchQueryType.SIMPLE,
            top_k=5,
            filter=""
        )
@@ -33,8 +33,8 @@ class HotelAgent(BaseAgent):
        return AgentConfiguration(
            name="HotelReviewAgent",
            description="This agent look hotel reviews",
-           instruction=("You are a hotel review agent, you only look answer from the data provided."
-                        "If the answer cannot be found in your data you answer I don't know"),
+           instruction=("You are an hotel assistant just use the tool attached to you to retrieve the data."
+                        "If the answer cannot be found answer I don't know"),
            model="gpt-4o",
            tools=ai_search.definitions,
            tool_resource=ai_search.resources        
