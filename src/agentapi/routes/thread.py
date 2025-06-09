@@ -3,7 +3,7 @@ from typing import Annotated, Dict, List
 from models import (Thread, Message)
 from repository.thread_repository import ThreadRepository
 from azure.ai.projects.aio import AIProjectClient
-from azure.ai.agents.models import ThreadMessage, MessageRole, RunStatus
+from azure.ai.agents.models import ThreadMessage, MessageRole, RunStatus, ListSortOrder
 from request.new_message import NewMessage
 from logging import Logger
 from dependencies import (
@@ -24,20 +24,9 @@ async def get_thread(thread_id: str,
                      project_client: Annotated[AIProjectClient, Depends(get_project_client)]) -> List[Message]:
     try: 
       messages = project_client.agents.messages.list(thread_id)
-      formatted_messages = []            
-      async for message in messages:        
-        annotation_content = _get_message_and_annotations(message)                
-        formatted_message = Message(
-           id=message.id,        
-           agent_id=agent_id,
-           content=annotation_content['content'],
-           annotations=annotation_content['annotations'],
-           created_at=message.created_at.astimezone().strftime("%m/%d/%y, %I:%M %p"),  
-           role=message.role
-        )
-        formatted_messages.append(formatted_message)
-      
-      return formatted_messages
+
+      return await _format_messages(messages,agent_id)
+
     except Exception as err:
       logger.error(err)
       raise HTTPException(status_code=500, detail='Internal Server Error')   
@@ -67,7 +56,7 @@ async def new_thread(agent_id: str,
    try:     
      
      # Set the agent to use for this thread
-     await project_client.agents.get_agent(agent_id)
+     #agent = await project_client.agents.get_agent(agent_id)
 
      thread = await project_client.agents.threads.create()
 
@@ -87,9 +76,9 @@ async def new_message(user_principal_name: Annotated[str, Depends(get_easy_auth_
                       new_message:NewMessage,
                       project_client: Annotated[AIProjectClient, Depends(get_project_client)],
                       thread_repository: Annotated[ThreadRepository, Depends(get_thread_repository)],
-                      logger: Annotated[Logger, Depends(get_logger)]) -> str:
+                      logger: Annotated[Logger, Depends(get_logger)]) -> List[Message]:
    try:
-
+      
       message = project_client.agents.messages.create(
          thread_id=new_message.thread_id,
          role=MessageRole.USER,
@@ -103,9 +92,32 @@ async def new_message(user_principal_name: Annotated[str, Depends(get_easy_auth_
          logger.error(f"Run status failed: ${run.last_error.message}")
          raise HTTPException(status_code=500, detail='Internal Server Error')              
 
+      messages = project_client.agents.messages.list(thread_id=new_message.thread_id,
+                                                     order=ListSortOrder.ASCENDING)
+      
+      return await _format_messages(messages)
+
    except Exception as err:
      logger.error(err)
      raise HTTPException(status_code=500, detail='Internal Server Error')            
+
+async def _format_messages(messages: List[ThreadMessage],agent_id:str) -> List[Message]:
+   
+   formatted_messages = []            
+   
+   async for message in messages:        
+     annotation_content = _get_message_and_annotations(message)                
+     formatted_message = Message(
+       id=message.id,        
+       agent_id=agent_id,
+       content=annotation_content['content'],
+       annotations=annotation_content['annotations'],
+       created_at=message.created_at.astimezone().strftime("%m/%d/%y, %I:%M %p"),  
+       role=message.role
+     )
+     formatted_messages.append(formatted_message)
+      
+   return formatted_messages
 
 def _get_message_and_annotations(message: ThreadMessage) -> Dict:
    annotations = []
