@@ -66,11 +66,31 @@ async def new_message(new_message:NewMessage,
          logger.error(f"Run status failed: ${run.last_error.message}")
          raise HTTPException(status_code=500, detail='Internal Server Error')              
 
+      list_order = ListSortOrder.ASCENDING
+      if new_message.previous_message_id is not None:
+         list_order = ListSortOrder.DESCENDING
+
       messages = project_client.agents.messages.list(thread_id=new_message.thread_id,                                                     
                                                      limit=10,
-                                                     order=ListSortOrder.ASCENDING)
+                                                     order=list_order)
             
-      return await _format_messages(messages, new_message.agent_id)
+      formatted_messages = await _format_messages(messages, new_message.agent_id)
+
+      # We don't want to always return all the history just the latest message
+      if new_message.previous_message_id is None:
+         return formatted_messages
+      
+      recent_messages = []
+      for recent_message in formatted_messages:
+         if recent_message.id == new_message.previous_message_id:
+            break
+         else:
+            recent_messages.append(recent_message)
+      
+      # Since we did ascending we need to re-order the message in ASCENDING order
+      recent_messages = recent_messages[::-1]
+
+      return recent_messages
 
    except Exception as err:
      logger.error(err)
