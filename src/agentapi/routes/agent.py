@@ -5,14 +5,18 @@ from azure.ai.projects.aio import AIProjectClient
 from typing import Annotated, List
 from models.agent import Agent
 from logging import Logger
+from opentelemetry import trace
 
 router = APIRouter(
     prefix="/agent"
 )
 
+tracer = trace.get_tracer(__name__)
+
 @router.get('/all')
 async def all(agent_repository: Annotated[AgentRepository, Depends(get_agent_repository)]) -> List[Agent]:
-    return await agent_repository.all()
+    with tracer.start_as_current_span("get_all_agents"):
+        return await agent_repository.all()
 
 
 # @router.delete("/reset/factory",description="Delete all agents and threads in the system")

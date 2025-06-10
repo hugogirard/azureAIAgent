@@ -110,6 +110,28 @@ module search 'br/public:avm/res/search/search-service:0.7.2' = {
   }
 }
 
+/* Log analytics for Application Insights */
+module workspace 'br/public:avm/res/operational-insights/workspace:0.11.2' = {
+  scope: rg
+  name: 'workspace'
+  params: {
+    name: 'log-${resourceSuffix}'
+    dailyQuotaGb: 2
+    dataRetention: 30
+    location: location
+  }
+}
+
+module insights 'br/public:avm/res/insights/component:0.6.0' = {
+  scope: rg
+  name: 'insights'
+  params: {
+    name: 'api-${resourceSuffix}'
+    workspaceResourceId: workspace.outputs.resourceId
+    location: location
+  }
+}
+
 /* CosmosDB needed to associate Thread to logged user */
 
 module cosmosdb 'br/public:avm/res/document-db/database-account:0.12.0' = {

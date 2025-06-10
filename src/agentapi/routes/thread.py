@@ -6,6 +6,7 @@ from azure.ai.projects.aio import AIProjectClient
 from azure.ai.agents.models import ThreadMessage, MessageRole, RunStatus, ListSortOrder
 from request.new_message import NewMessage
 from logging import Logger
+from opentelemetry import trace
 from dependencies import (
    get_thread_repository, 
    get_easy_auth_token, 
@@ -16,6 +17,8 @@ from dependencies import (
 router = APIRouter(
     prefix="/thread"
 )
+
+tracer = trace.get_tracer(__name__)
 
 @router.get("/")
 async def get_thread(thread_id: str,
@@ -38,9 +41,9 @@ async def get_all_threads(user_principal_name: Annotated[str, Depends(get_easy_a
                           logger: Annotated[Logger, Depends(get_logger)]) -> List[str]:
     
    try:
-   
-     threads = await thread_repository.get(user_principal_name)
-     return [thread.id for thread in threads]          
+     with tracer.start_as_current_span("get_all_thread_user"):
+       threads = await thread_repository.get(user_principal_name)
+       return [thread.id for thread in threads]          
    
    except Exception as err:
      logger.error(err)
@@ -52,45 +55,46 @@ async def new_message(new_message:NewMessage,
                       project_client: Annotated[AIProjectClient, Depends(get_project_client)],                      
                       logger: Annotated[Logger, Depends(get_logger)]) -> List[Message]:
    try:
-      
-      message = await project_client.agents.messages.create(
-         thread_id=new_message.thread_id,
-         role=MessageRole.USER,
-         content=new_message.prompt
-      )
+      with tracer.start_as_current_span("new_message"):
+         
+         await project_client.agents.messages.create(
+            thread_id=new_message.thread_id,
+            role=MessageRole.USER,
+            content=new_message.prompt
+         )
 
-      run = await project_client.agents.runs.create_and_process(thread_id=new_message.thread_id,
-                                                                agent_id=new_message.agent_id)
-      
-      if run.status == RunStatus.FAILED:
-         logger.error(f"Run status failed: ${run.last_error.message}")
-         raise HTTPException(status_code=500, detail='Internal Server Error')              
+         run = await project_client.agents.runs.create_and_process(thread_id=new_message.thread_id,
+                                                                  agent_id=new_message.agent_id)
+         
+         if run.status == RunStatus.FAILED:
+            logger.error(f"Run status failed: ${run.last_error.message}")
+            raise HTTPException(status_code=500, detail='Internal Server Error')              
 
-      list_order = ListSortOrder.ASCENDING
-      if new_message.previous_message_id is not None:
-         list_order = ListSortOrder.DESCENDING
+         list_order = ListSortOrder.ASCENDING
+         if new_message.previous_message_id is not None:
+            list_order = ListSortOrder.DESCENDING
 
-      messages = project_client.agents.messages.list(thread_id=new_message.thread_id,                                                     
-                                                     limit=10,
-                                                     order=list_order)
+         messages = project_client.agents.messages.list(thread_id=new_message.thread_id,                                                     
+                                                      limit=10,
+                                                      order=list_order)
 
-      formatted_messages = await _format_messages(messages, new_message.agent_id)
+         formatted_messages = await _format_messages(messages, new_message.agent_id)
 
-      # We don't want to always return all the history just the latest message
-      if new_message.previous_message_id is None:
-         return formatted_messages
-      
-      recent_messages = []
-      for recent_message in formatted_messages:
-         if recent_message.id == new_message.previous_message_id:
-            break
-         else:
-            recent_messages.append(recent_message)
-      
-      # Since we did ascending we need to re-order the message in ASCENDING order
-      recent_messages = recent_messages[::-1]
+         # We don't want to always return all the history just the latest message
+         if new_message.previous_message_id is None:
+            return formatted_messages
+         
+         recent_messages = []
+         for recent_message in formatted_messages:
+            if recent_message.id == new_message.previous_message_id:
+               break
+            else:
+               recent_messages.append(recent_message)
+         
+         # Since we did ascending we need to re-order the message in ASCENDING order
+         recent_messages = recent_messages[::-1]
 
-      return recent_messages
+         return recent_messages
 
    except Exception as err:
      logger.error(err)
