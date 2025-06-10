@@ -17,7 +17,7 @@ project_endpoint = os.environ["PROJECT_ENDPOINT"]
 
 overwrite: bool = os.getenv('OVERWRITE', 'false').lower() == 'true'
 
-print(f"Overwrite mode set to : ${overwrite}")
+print(f"Overwrite mode set to : {overwrite}")
 
 # Create an AIProjectClient instance
 project_client = AIProjectClient(
@@ -39,7 +39,7 @@ for azure_agent in project_client.agents.list_agents():
         "name": azure_agent.name
     })
 
-print(f"Found ${len(azure_agents)} existing agents")
+print(f"Found {len(azure_agents)} existing agents")
 
 base_agents_dir = os.path.join(os.path.dirname(__file__), "agents")
 agents = Utility.find_agent_classes(base_agents_dir)
@@ -52,45 +52,83 @@ for agent in agents:
     configuration: AgentConfiguration = agent.get_agent(connection)
     agents_configuration.append(configuration)
     
+Utility.upsert_agents(
+    overwrite,
+    agents_configuration,
+    azure_agents,
+    project_client,
+    agent_repository
+)
+# for agent_conf in agents_configuration:        
+#    # Find existing agent by name
+#     existing_agent = next((a for a in azure_agents if a["name"] == agent_conf.name), None)
+#     agent_id: str = None
+#     update_agent: bool = False
 
-for agent_conf in agents_configuration:        
-   # Find existing agent by name
-    existing_agent = next((a for a in azure_agents if a["name"] == agent_conf.name), None)
-    agent_id: str = None
-    update_agent: bool = False
+#     if existing_agent:
+#         if overwrite:
+#             print(f"Agent {agent_conf.name} will be updated")
+#             created_agent = project_client.agents.update_agent(
+#                 agent_id=existing_agent["id"],
+#                 model=agent_conf.model,
+#                 name=agent_conf.name,
+#                 description=agent_conf.description,
+#                 instructions=agent_conf.instruction,
+#                 tools=agent_conf.tools,
+#                 tool_resources=agent_conf.tool_resource
 
-    if existing_agent:
-        if overwrite:
-            print(f"Agent {agent_conf.name} will be updated")
-            created_agent = project_client.agents.update_agent(
-                agent_id=existing_agent["id"],
-                model=agent_conf.model,
-                name=agent_conf.name,
-                description=agent_conf.description,
-                instructions=agent_conf.description,
-                tools=agent_conf.tools,
-                tool_resources=agent_conf.tool_resource
+#             )
+#             print(f"Agent ${agent_conf.name} created with ID: ${created_agent.id}")     
+#             update_agent = True
+#             agent_id = created_agent.id
+#             pass
+#         else:    
+#             print(f"Agent {agent_conf.name} already exists. Skipping creation.")            
+#     else:
+#         created_agent = project_client.agents.create_agent(
+#             model=agent_conf.model,
+#             name=agent_conf.name,
+#             description=agent_conf.description,
+#             instructions=agent_conf.instruction,
+#             tools=agent_conf.tools,
+#             tool_resources=agent_conf.tool_resource     
+#         )
+#         print(f"Agent ${agent_conf.name} created with ID: ${created_agent.id}")  
+#         update_agent = True
+#         agent_id = created_agent.id
 
-            )
-            print(f"Agent ${agent_conf.name} created with ID: ${created_agent.id}")     
-            update_agent = True
-            agent_id = created_agent.id
-            pass
-        else:    
-            print(f"Agent {agent_conf.name} already exists. Skipping creation.")            
-    else:
-        created_agent = project_client.agents.create_agent(
-            model=agent_conf.model,
-            name=agent_conf.name,
-            description=agent_conf.description,
-            instructions=agent_conf.instruction,
-            tools=agent_conf.tools,
-            tool_resources=agent_conf.tool_resource     
-        )
-        print(f"Agent ${agent_conf.name} created with ID: ${created_agent.id}")  
-        update_agent = True
-        agent_id = created_agent.id
+#     if update_agent:
+#         update_agent = False
+#         agent_repository.upsert_agent(agent_conf.name,agent_id)
 
-    if update_agent:
-        update_agent = False
-        agent_repository.upsert_agent(agent_conf.name,agent_id)
+# Now we configure the Multi-Agents
+
+# Load the list of new agents, needed for the ID
+
+print("Reload list of added/updated agents")
+
+azure_agents = []
+for azure_agent in project_client.agents.list_agents(): 
+    azure_agents.append({
+        "id": azure_agent.id,
+        "name": azure_agent.name
+    })
+
+base_agents_dir = os.path.join(os.path.dirname(__file__), "multi_agent")
+agents = Utility.find_multi_agent_classes(base_agents_dir)
+
+print(f"Found {len(agents)} multi-agents")
+
+agents_configuration: List[AgentConfiguration] = []
+
+for agent in agents:
+    configuration: AgentConfiguration = agent.get_agent(azure_agents)
+    agents_configuration.append(configuration)
+
+Utility.upsert_agents(
+    overwrite,
+    agents_configuration,
+    azure_agents,
+    project_client,
+    agent_repository
+)    

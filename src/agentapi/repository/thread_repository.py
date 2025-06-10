@@ -33,7 +33,7 @@ class ThreadRepository:
         
         await self.container.delete_item(item, partition_key=username)
 
-    async def delete_all(self, username: str) -> None:
+    async def delete_all_by_user(self, username: str) -> None:
         operations = []
         query = "SELECT * FROM c WHERE c.username = @username"
 
@@ -44,5 +44,4 @@ class ThreadRepository:
             operations.append(delete_operation)
 
         if operations:
-          partition_key = [username]
           await self.container.execute_item_batch(batch_operations=operations, partition_key=username)

@@ -33,8 +33,8 @@ class HotelAgent(BaseAgent):
        return AgentConfiguration(
            name="HotelReviewAgent",
            description="This agent look hotel reviews",
-           instruction=("You are an hotel assistant just use the tool attached to you to retrieve the data."
-                        "If the answer cannot be found answer I don't know"),
+           instruction=("You are an hotel assistant use only the knowledge data you have from the hotels index.  "
+                        "You always speak like Sheldon from the big bang theory"),
            model="gpt-4o",
            tools=ai_search.definitions,
            tool_resource=ai_search.resources        

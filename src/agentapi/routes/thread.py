@@ -136,7 +136,7 @@ async def delete_all(user_principal_name: Annotated[str, Depends(get_easy_auth_t
          except Exception:
             continue # In case someone delete the thread for the Azure Portal
 
-      await thread_repository.delete_all(user_principal_name)
+      await thread_repository.delete_all_by_user(user_principal_name)
 
       return Response(status_code=204)
       

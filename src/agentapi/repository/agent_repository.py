@@ -13,4 +13,7 @@ class AgentRepository:
         async for item in self.container.query_items(query=query):
             agent = Agent.model_validate(item)
             agents.append(agent)
-        return agents             
+        return agents            
+
+    async def delete_all(self) -> None:
+        pass
