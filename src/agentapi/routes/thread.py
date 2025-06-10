@@ -23,7 +23,7 @@ async def get_thread(thread_id: str,
                      logger: Annotated[Logger, Depends(get_logger)],
                      project_client: Annotated[AIProjectClient, Depends(get_project_client)]) -> List[Message]:
     try: 
-      messages = project_client.agents.messages.list(thread_id)
+      messages = project_client.agents.messages.list(thread_id, order=ListSortOrder.ASCENDING)
 
       return await _format_messages(messages,agent_id)
 
@@ -73,7 +73,7 @@ async def new_message(new_message:NewMessage,
       messages = project_client.agents.messages.list(thread_id=new_message.thread_id,                                                     
                                                      limit=10,
                                                      order=list_order)
-            
+
       formatted_messages = await _format_messages(messages, new_message.agent_id)
 
       # We don't want to always return all the history just the latest message
