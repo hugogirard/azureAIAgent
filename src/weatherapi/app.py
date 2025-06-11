@@ -4,8 +4,12 @@ from models.region import TamrielRegion
 from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 import random
+import os
 
-app = FastAPI(title="Tamriel Weather Forecast")
+app = FastAPI(title="Tamriel Weather Forecast",
+             servers=[
+                {"url": os.getenv('SERVER_ADR'), "description": "Production server"},
+             ])
 
 app.add_middleware(
     CORSMiddleware,
@@ -15,7 +19,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get('/api/weather')
+@app.get('/api/weather',
+         operation_id="get_tamriel_weather_by_region",
+         summary="Return the Tamriel weather forecast by region")
 async def get_weather(region: TamrielRegion):
     forecast = region_forecasts[region]
     temperature_c = random.randint(*forecast["temp_range"])
