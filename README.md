@@ -1,19 +1,38 @@
-https://cognitiveservices.azure.com/
+# Introduction
 
-chmod +x deploy.sh
+🚀 **Welcome to the Azure AI Agents Demo Repository!** 🌟
 
-./deploy.sh <resource-group-name>
+This repository showcases a demo implementation of the **Azure AI Agent Service** with multiple agents configured using a **GitOps-inspired approach** for deployment. 🛠️ It includes:
 
-### Error
+- Python scripts for all agents 🤖
+- A **FastAPI backend** leveraging the **Azure AI Foundry SDK** ⚡
 
-NormalizedResponse on module msal.throttled_http_client
+Explore, learn, and innovate with this cutting-edge integration of Azure AI services! 💡
 
-https://github.com/Azure/azure-cli/issues/31419
+## GitOps-Inspired Implementation
 
-```
-AZURE_CORE_USE_MSAL_HTTP_CACHE=false
-az config set core.use_msal_http_cache=false
-sudo ~/.azure/msal_http_cache.bin
-```
+🔧 **GitOps-Inspired Configuration with Azure AI Agents** 🌐
 
-https://cognitiveservices.azure.com/
+In this demo, we implemented a configuration approach that avoids reliance on Bicep or Terraform due to their unavailability. Instead, agents are configured using a **GitOps-inspired approach** where configurations are stored in version-controlled repositories. The **Azure SDK for Python** is utilized to dynamically retrieve and deploy these configurations. This method aligns more closely with DevOps practices, ensuring seamless integration and deployment of agents.
+
+For detailed instructions and code examples, check out the [GitOps documentation](GITOPS.md). 📖✨
+
+## Architecture
+
+![Architecture Diagram](diagram/architecture.png)
+
+## AgentAPI
+
+### Leveraging Azure AI Project SDK in FastAPI Backend
+
+🌟 **FastAPI Backend with Azure AI Project SDK** 🚀
+
+The **FastAPI backend** serves as the REST API layer, wrapping the **Azure AI Project SDK** to provide seamless interaction with the AgentSDK. This backend acts as the gateway for customers to interact with the configured agents, enabling dynamic and scalable AI-powered solutions.
+
+Key features include:
+
+- **RESTful API endpoints** for managing and interacting with agents 🔄
+- Integration with the **Azure AI Project SDK** for streamlined operations ⚙️
+- A user-friendly interface for customers to interact with AI agents 🤝
+
+This design ensures a robust and efficient system for deploying and managing Azure AI agents while maintaining simplicity and scalability. 🌐✨
