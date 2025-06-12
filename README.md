@@ -17,9 +17,9 @@ In this demo, we implemented a configuration approach that avoids reliance on Bi
 
 For detailed instructions and code examples, check out the [GitOps documentation](GITOPS.md). 📖✨
 
-## Architecture
+<!-- ## Architecture
 
-![Architecture Diagram](diagram/architecture.png)
+![Architecture Diagram](diagram/architecture.png) -->
 
 ## AgentAPI
 
