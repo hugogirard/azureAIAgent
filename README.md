@@ -36,3 +36,11 @@ Key features include:
 - A user-friendly interface for customers to interact with AI agents 🤝
 
 This design ensures a robust and efficient system for deploying and managing Azure AI agents while maintaining simplicity and scalability. 🌐✨
+
+##
+
+## REST API Documentation
+
+📄 **Detailed REST API Information** 🔍
+
+For comprehensive details about the REST API endpoints, their usage, and examples, refer to the [REST API documentation](RESTAPI.md). 📘✨
