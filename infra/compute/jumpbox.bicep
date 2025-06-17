@@ -117,3 +117,5 @@ resource shutdown_computevm_virtualMachine 'Microsoft.DevTestLab/schedules@2018-
     }
   }
 }
+output resourceName string = virtualMachine.name
+output privateIPAdress string = networkInterface.properties.ipConfigurations[0].properties.privateIPAddress

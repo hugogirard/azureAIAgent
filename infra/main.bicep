@@ -77,6 +77,11 @@ resource rg 'Microsoft.Resources/resourceGroups@2025-04-01' = {
 /* Create all private DNS Zone needed */
 module privatedns 'dns/private.dns.bicep' = {
   scope: rg
+  params: {
+    virtualNetworkResourceId: vnet.outputs.resourceId
+    jumpboxIpv4Address: jumpbox.outputs.privateIPAdress
+    jumpboxName: jumpbox.outputs.resourceName
+  }
 }
 
 /* Suffix from the resource group if none specific */
