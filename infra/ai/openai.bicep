@@ -13,8 +13,13 @@ resource openai 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' = {
   properties: {
     apiProperties: {}
     customSubDomainName: openAIResourceName
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Deny'
+      virtualNetworkRules: []
+    }
     allowProjectManagement: false
-    publicNetworkAccess: 'Enabled'
+    publicNetworkAccess: 'Disabled'
     restrictOutboundNetworkAccess: false
     disableLocalAuth: true
     dynamicThrottlingEnabled: false

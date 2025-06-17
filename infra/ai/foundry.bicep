@@ -2,8 +2,10 @@ param location string
 param suffix string
 param chatCompletionModel string
 param embeddingModel string
+param agentSubnetId string
 
 var aiFoundryName = 'aifoundry${suffix}'
+var networkInjection = true
 
 resource aiFoundry 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' = {
   name: aiFoundryName
@@ -16,11 +18,21 @@ resource aiFoundry 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' = {
   }
   kind: 'AIServices'
   properties: {
-    publicNetworkAccess: 'Enabled'
+    publicNetworkAccess: 'Disabled'
     // required to work in AI Foundry
     allowProjectManagement: true
-    disableLocalAuth: true
+    // true is not supported today
+    disableLocalAuth: false
     customSubDomainName: aiFoundryName
+    networkInjections: ((networkInjection == 'true')
+      ? [
+          {
+            scenario: 'agent'
+            subnetArmId: agentSubnetId
+            useMicrosoftManagedNetwork: false
+          }
+        ]
+      : null)
   }
 }
 
@@ -29,15 +41,15 @@ resource aiFoundry 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' = {
   Its advisable to create one project right away, so development teams can directly get started.
   Projects may be granted individual RBAC permissions and identities on top of what account provides.
 */
-resource aiProject 'Microsoft.CognitiveServices/accounts/projects@2025-04-01-preview' = {
-  name: 'contoso'
-  parent: aiFoundry
-  location: location
-  identity: {
-    type: 'SystemAssigned'
-  }
-  properties: {}
-}
+// resource aiProject 'Microsoft.CognitiveServices/accounts/projects@2025-04-01-preview' = {
+//   name: 'contoso'
+//   parent: aiFoundry
+//   location: location
+//   identity: {
+//     type: 'SystemAssigned'
+//   }
+//   properties: {}
+// }
 
 /*
   Optionally deploy a model to use in playground, agents and other tools.

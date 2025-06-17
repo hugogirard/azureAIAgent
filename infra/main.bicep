@@ -3,7 +3,9 @@ targetScope = 'subscription'
 @description('The location where all resources will be created')
 @allowed([
   'eastus2'
-  'canadacentral'
+  'eastus'
+  'westus'
+  'westus3'
 ])
 param location string
 
@@ -13,11 +15,11 @@ param resourceGroupName string
 @description('Suffix for the resource group')
 param suffix string
 
-@description('Publisher Email admin for APIM')
-param publisherEmail string
+// @description('Publisher Email admin for APIM')
+// param publisherEmail string
 
-@description('Publisher Name for APIM')
-param publisherName string
+// @description('Publisher Name for APIM')
+// param publisherName string
 
 @description('The chat completion model to deploy, be sure its supported in the specific region')
 @allowed([
@@ -35,16 +37,36 @@ param chatCompletionModel string
 ])
 param embeddingModel string
 
-@description('The SKU of APIM')
-@allowed([
-  'Developer'
-  'BasicV2'
-  'StandardV2'
-  'Premium'
-])
-param apimSku string
+// @description('The SKU of APIM')
+// @allowed([
+//   'Developer'
+//   'BasicV2'
+//   'StandardV2'
+//   'Premium'
+// ])
+// param apimSku string
 
-param userObjectId string
+// param userObjectId string
+
+@description('The VNET address prefix')
+param vnetAddressPrefix string
+
+@description('The subnet address prefix for the private endpoints')
+param addressPrefixSubnetPrivateEndpoint string
+
+@description('The subnet address prefix for the agents')
+param addressPrefixSubnetAgents string
+
+@description('The prefix address of the jumpbox')
+param addressPrefixSubnetJumpbox string
+
+@description('The admin username of the jumpbox')
+@secure()
+param adminUsername string
+
+@description('The admin password of the jumpbox')
+@secure()
+param adminPassword string
 
 /* Create the resource group */
 resource rg 'Microsoft.Resources/resourceGroups@2025-04-01' = {
@@ -55,22 +77,84 @@ resource rg 'Microsoft.Resources/resourceGroups@2025-04-01' = {
 /* Suffix from the resource group if none specific */
 var resourceSuffix = empty(suffix) ? uniqueString(rg.id) : suffix
 
-/* API Management instace */
-module apim 'br/public:avm/res/api-management/service:0.9.1' = {
+/* Create the VNET that will host all the resource */
+
+module nsgPE 'br/public:avm/res/network/network-security-group:0.5.1' = {
   scope: rg
   params: {
-    // Required parameters    
-    name: 'apim-${resourceSuffix}'
-    publisherEmail: publisherEmail
-    publisherName: publisherName
-    managedIdentities: {
-      systemAssigned: true
-    }
-    // Non-required parameters
-    enableDeveloperPortal: true
-    sku: apimSku
+    name: 'nsg-pe'
   }
 }
+
+module nsgAgent 'br/public:avm/res/network/network-security-group:0.5.1' = {
+  scope: rg
+  params: {
+    name: 'nsg-pe'
+  }
+}
+
+module nsgJumpbox 'br/public:avm/res/network/network-security-group:0.5.1' = {
+  scope: rg
+  params: {
+    name: 'nsg-jumpbox'
+  }
+}
+
+module vnet 'br/public:avm/res/network/virtual-network:0.7.0' = {
+  scope: rg
+  params: {
+    name: 'vnet-agent'
+    addressPrefixes: [
+      vnetAddressPrefix
+    ]
+    subnets: [
+      {
+        name: 'pe-subnet'
+        addressPrefix: addressPrefixSubnetPrivateEndpoint
+        networkSecurityGroupResourceId: nsgPE.outputs.resourceId
+      }
+      {
+        name: 'pe-agent'
+        addressPrefix: addressPrefixSubnetAgents
+        delegation: 'Microsoft.app/environments'
+        networkSecurityGroupResourceId: nsgAgent.outputs.resourceId
+      }
+      {
+        name: 'pe-jumpbox'
+        addressPrefix: addressPrefixSubnetJumpbox
+        networkSecurityGroupResourceId: nsgJumpbox.outputs.resourceId
+      }
+    ]
+  }
+}
+
+/* Jumpbox since everything is private to test the setup */
+module jumpbox 'compute/jumpbox.bicep' = {
+  scope: rg
+  params: {
+    location: location
+    adminPassword: adminPassword
+    adminUsername: adminUsername
+    subnetResourceId: vnet.outputs.subnetResourceIds[2]
+  }
+}
+
+/* API Management instace */
+// module apim 'br/public:avm/res/api-management/service:0.9.1' = {
+//   scope: rg
+//   params: {
+//     // Required parameters    
+//     name: 'apim-${resourceSuffix}'
+//     publisherEmail: publisherEmail
+//     publisherName: publisherName
+//     managedIdentities: {
+//       systemAssigned: true
+//     }
+//     // Non-required parameters
+//     enableDeveloperPortal: true
+//     sku: apimSku
+//   }
+// }
 
 /* Deploy Azure AI Foundry */
 module foundry 'ai/foundry.bicep' = {
@@ -80,10 +164,12 @@ module foundry 'ai/foundry.bicep' = {
     chatCompletionModel: chatCompletionModel
     embeddingModel: embeddingModel
     suffix: resourceSuffix
+    agentSubnetId: vnet.outputs.subnetResourceIds[1]
   }
 }
 
-/* OpenAI needed for indexation only for the demo */
+/* OpenAI needed for indexation using the AI Search built-in capabilities */
+/* Today seems we cannot use the OpenAI exposed in AI Services  */
 
 module openai 'ai/openai.bicep' = {
   scope: rg
@@ -99,6 +185,10 @@ module search 'br/public:avm/res/search/search-service:0.7.2' = {
   name: 'search'
   params: {
     disableLocalAuth: true
+    publicNetworkAccess: 'Disabled'
+    networkRuleSet: {
+      ipRules: []
+    }
     name: 'search${replace(resourceSuffix,'-','')}'
     location: location
     managedIdentities: {
@@ -143,7 +233,8 @@ module cosmosdb 'br/public:avm/res/document-db/database-account:0.12.0' = {
     automaticFailover: false
     disableLocalAuth: true
     networkRestrictions: {
-      publicNetworkAccess: 'Enabled'
+      publicNetworkAccess: 'Disabled'
+      networkAclBypass: 'AzureServices'
     }
     locations: [
       {
@@ -184,15 +275,18 @@ module cosmosdb 'br/public:avm/res/document-db/database-account:0.12.0' = {
   }
 }
 
-/* Storage needed for the upload of the dataset */
+/* Storage needed for the upload of the dataset and for AI Foundry */
 module storage 'br/public:avm/res/storage/storage-account:0.19.0' = {
   scope: rg
   params: {
     name: 'str${replace(resourceSuffix,'-','')}'
     location: location
-    allowBlobPublicAccess: true
+    allowBlobPublicAccess: false
+    kind: 'StorageV2'
     networkAcls: {
-      defaultAction: 'Allow'
+      defaultAction: 'Deny'
+      bypass: 'AzureServices'
+      virtualNetworkRules: []
     }
     blobServices: {
       containers: [
@@ -202,37 +296,37 @@ module storage 'br/public:avm/res/storage/storage-account:0.19.0' = {
       ]
     }
     allowSharedKeyAccess: false
-    publicNetworkAccess: 'Enabled'
+    publicNetworkAccess: 'Disabled'
   }
 }
 
 /* APIM need with managed identity access to Foundry */
-module rbac 'rbac/foundry.bicep' = {
-  scope: rg
-  params: {
-    foundryResourceId: foundry.outputs.resourceId
-    apimSystemAssignedMIPrincipalId: apim.outputs.systemAssignedMIPrincipalId
-    openAIResourceId: openai.outputs.resourceId
-    aiSearchSystemAssignedMIPrincipalId: search.outputs.systemAssignedMIPrincipalId
-    storageResourceId: storage.outputs.resourceId
-    aiFoundrySystemAssignedMIPrincipalId: foundry.outputs.systemAssignedMIPrincipalId
-    aiSearchResourceId: search.outputs.systemAssignedMIPrincipalId
-  }
-}
+// module rbac 'rbac/foundry.bicep' = {
+//   scope: rg
+//   params: {
+//     foundryResourceId: foundry.outputs.resourceId
+//     //apimSystemAssignedMIPrincipalId: apim.outputs.systemAssignedMIPrincipalId
+//     openAIResourceId: openai.outputs.resourceId
+//     aiSearchSystemAssignedMIPrincipalId: search.outputs.systemAssignedMIPrincipalId
+//     storageResourceId: storage.outputs.resourceId
+//     aiFoundrySystemAssignedMIPrincipalId: foundry.outputs.systemAssignedMIPrincipalId
+//     aiSearchResourceId: search.outputs.systemAssignedMIPrincipalId
+//   }
+// }
 
-module rbacUser 'rbac/user.rbac.bicep' = {
-  scope: rg
-  params: {
-    cosmosDbResourceName: cosmosdb.outputs.name
-    openAIResourceId: foundry.outputs.resourceId
-    searchResourceId: search.outputs.resourceId
-    storageResourceId: storage.outputs.resourceId
-    userObjectId: userObjectId
-  }
-}
+// module rbacUser 'rbac/user.rbac.bicep' = {
+//   scope: rg
+//   params: {
+//     cosmosDbResourceName: cosmosdb.outputs.name
+//     openAIResourceId: foundry.outputs.resourceId
+//     searchResourceId: search.outputs.resourceId
+//     storageResourceId: storage.outputs.resourceId
+//     userObjectId: userObjectId
+//   }
+// }
 
-@description('The name of APIM resource')
-output apimResourceName string = apim.outputs.name
+// @description('The name of APIM resource')
+// output apimResourceName string = apim.outputs.name
 
 @description('The endpoint of Azure AI Foundry')
 output foundryEndpoint string = foundry.outputs.endpoint

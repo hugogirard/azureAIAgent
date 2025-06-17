@@ -1,4 +1,4 @@
-param apimSystemAssignedMIPrincipalId string
+//param apimSystemAssignedMIPrincipalId string
 param aiSearchSystemAssignedMIPrincipalId string
 param aiFoundrySystemAssignedMIPrincipalId string
 param openAIResourceId string
@@ -24,14 +24,14 @@ resource search_index_data_contributor 'Microsoft.Authorization/roleDefinitions@
   scope: subscription()
 }
 
-module apim_cognitive_services_user 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-  name: 'cognitive_services_user'
-  params: {
-    principalId: apimSystemAssignedMIPrincipalId
-    resourceId: foundryResourceId
-    roleDefinitionId: cognitive_services_user.id
-  }
-}
+// module apim_cognitive_services_user 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
+//   name: 'cognitive_services_user'
+//   params: {
+//     principalId: apimSystemAssignedMIPrincipalId
+//     resourceId: foundryResourceId
+//     roleDefinitionId: cognitive_services_user.id
+//   }
+// }
 
 module aisearch_cognitive_services_user 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
   name: 'aisearch_cognitive_services_user'
