@@ -110,3 +110,9 @@ module cosmosDBPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1'
     ]
   }
 }
+
+output aiServicesPrivateDnsZoneResourceId string = aiServicesPrivateDnsZone.outputs.resourceId
+output openAiPrivateDnsZoneResourceId string = openAiPrivateDnsZone.outputs.resourceId
+output cognitiveServicesPrivateDnsZoneResourceId string = cognitiveServicesPrivateDnsZone.outputs.resourceId
+output storagePrivateDnsZoneResourceId string = storagePrivateDnsZone.outputs.resourceId
+output cosmosDBPrivateDnsZoneResourceId string = cosmosDBPrivateDnsZone.outputs.resourceId

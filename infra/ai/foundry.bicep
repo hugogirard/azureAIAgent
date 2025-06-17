@@ -3,6 +3,10 @@ param suffix string
 param chatCompletionModel string
 param embeddingModel string
 param agentSubnetId string
+param privateEndpointSubnetResourceId string
+param aiServicesPrivateDnsZoneResourceId string
+param openAiPrivateDnsZoneResourceId string
+param cognitiveServicesPrivateDnsZoneResourceId string
 
 var aiFoundryName = 'aifoundry${suffix}'
 var networkInjection = true
@@ -33,6 +37,54 @@ resource aiFoundry 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' = {
           }
         ]
       : null)
+  }
+}
+
+resource aiAccountPrivateEndpoint 'Microsoft.Network/privateEndpoints@2024-05-01' = {
+  name: '${aiFoundry.name}-private-endpoint'
+  location: resourceGroup().location
+  properties: {
+    subnet: {
+      id: privateEndpointSubnetResourceId
+    }
+    privateLinkServiceConnections: [
+      {
+        name: '${aiFoundry.name}-private-link-service-connection'
+        properties: {
+          privateLinkServiceId: aiFoundry.id
+          groupIds: [
+            'account' // Target AI Services account
+          ]
+        }
+      }
+    ]
+  }
+}
+
+resource aiServicesDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2024-05-01' = {
+  parent: aiAccountPrivateEndpoint
+  name: '${aiFoundry.name}-dns-group'
+  properties: {
+    privateDnsZoneConfigs: [
+      {
+        name: '${aiFoundry.name}-dns-aiserv-config'
+        properties: {
+          privateDnsZoneId: aiServicesPrivateDnsZoneResourceId
+        }
+      }
+      {
+        name: '${aiFoundry.name}-dns-openai-config'
+        properties: {
+          privateDnsZoneId: openAiPrivateDnsZoneResourceId
+        }
+      }
+      {
+        name: '${aiFoundry.name}-dns-cogserv-config'
+        properties: {
+          privateDnsZoneId: cognitiveServicesPrivateDnsZoneResourceId
+        }
+      }
+    ]
   }
 }
 

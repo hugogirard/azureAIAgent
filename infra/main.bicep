@@ -88,53 +88,13 @@ module privatedns 'dns/private.dns.bicep' = {
 var resourceSuffix = empty(suffix) ? uniqueString(rg.id) : suffix
 
 /* Create the VNET that will host all the resource */
-
-module nsgPE 'br/public:avm/res/network/network-security-group:0.5.1' = {
+module vnet 'network/vnet.bicep' = {
   scope: rg
   params: {
-    name: 'nsg-pe'
-  }
-}
-
-module nsgAgent 'br/public:avm/res/network/network-security-group:0.5.1' = {
-  scope: rg
-  params: {
-    name: 'nsg-pe'
-  }
-}
-
-module nsgJumpbox 'br/public:avm/res/network/network-security-group:0.5.1' = {
-  scope: rg
-  params: {
-    name: 'nsg-jumpbox'
-  }
-}
-
-module vnet 'br/public:avm/res/network/virtual-network:0.7.0' = {
-  scope: rg
-  params: {
-    name: 'vnet-agent'
-    addressPrefixes: [
-      vnetAddressPrefix
-    ]
-    subnets: [
-      {
-        name: 'pe-subnet'
-        addressPrefix: addressPrefixSubnetPrivateEndpoint
-        networkSecurityGroupResourceId: nsgPE.outputs.resourceId
-      }
-      {
-        name: 'pe-agent'
-        addressPrefix: addressPrefixSubnetAgents
-        delegation: 'Microsoft.app/environments'
-        networkSecurityGroupResourceId: nsgAgent.outputs.resourceId
-      }
-      {
-        name: 'pe-jumpbox'
-        addressPrefix: addressPrefixSubnetJumpbox
-        networkSecurityGroupResourceId: nsgJumpbox.outputs.resourceId
-      }
-    ]
+    addressPrefixSubnetAgents: addressPrefixSubnetAgents
+    addressPrefixSubnetJumpbox: addressPrefixSubnetJumpbox
+    addressPrefixSubnetPrivateEndpoint: addressPrefixSubnetPrivateEndpoint
+    vnetAddressPrefix: vnetAddressPrefix
   }
 }
 
@@ -175,6 +135,10 @@ module foundry 'ai/foundry.bicep' = {
     embeddingModel: embeddingModel
     suffix: resourceSuffix
     agentSubnetId: vnet.outputs.subnetResourceIds[1]
+    aiServicesPrivateDnsZoneResourceId: privatedns.outputs.aiServicesPrivateDnsZoneResourceId
+    cognitiveServicesPrivateDnsZoneResourceId: privatedns.outputs.cognitiveServicesPrivateDnsZoneResourceId
+    openAiPrivateDnsZoneResourceId: privatedns.outputs.openAiPrivateDnsZoneResourceId
+    privateEndpointSubnetResourceId: vnet.outputs.subnetResourceIds[0]
   }
 }
 
