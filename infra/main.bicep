@@ -74,6 +74,11 @@ resource rg 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   location: location
 }
 
+/* Create all private DNS Zone needed */
+module privatedns 'dns/private.dns.bicep' = {
+  scope: rg
+}
+
 /* Suffix from the resource group if none specific */
 var resourceSuffix = empty(suffix) ? uniqueString(rg.id) : suffix
 
@@ -197,6 +202,11 @@ module search 'br/public:avm/res/search/search-service:0.7.2' = {
     partitionCount: 1
     replicaCount: 1
     sku: 'standard'
+    privateEndpoints: [
+      {
+        subnetResourceId: vnet.outputs.subnetResourceIds[0]
+      }
+    ]
   }
 }
 
