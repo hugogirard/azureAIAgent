@@ -26,11 +26,46 @@ module aiServicesPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.
   }
 }
 
+module aiSearchPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = {
+  params: {
+    name: 'privatelink.search.windows.net'
+    // Non-required parameters
+    location: 'global'
+    a: [
+      {
+        name: jumpboxName
+        ttl: 10
+        aRecords: [
+          {
+            ipv4Address: jumpboxIpv4Address
+          }
+        ]
+      }
+    ]
+    virtualNetworkLinks: [
+      {
+        virtualNetworkResourceId: virtualNetworkResourceId
+      }
+    ]
+  }
+}
+
 module openAiPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = {
   params: {
     name: 'privatelink.openai.azure.com'
     // Non-required parameters
     location: 'global'
+    a: [
+      {
+        name: jumpboxName
+        ttl: 10
+        aRecords: [
+          {
+            ipv4Address: jumpboxIpv4Address
+          }
+        ]
+      }
+    ]
     virtualNetworkLinks: [
       {
         virtualNetworkResourceId: virtualNetworkResourceId
@@ -116,3 +151,4 @@ output openAiPrivateDnsZoneResourceId string = openAiPrivateDnsZone.outputs.reso
 output cognitiveServicesPrivateDnsZoneResourceId string = cognitiveServicesPrivateDnsZone.outputs.resourceId
 output storagePrivateDnsZoneResourceId string = storagePrivateDnsZone.outputs.resourceId
 output cosmosDBPrivateDnsZoneResourceId string = cosmosDBPrivateDnsZone.outputs.resourceId
+output aiSearchPrivateDnsZoneResourceId string = aiSearchPrivateDnsZone.outputs.resourceId

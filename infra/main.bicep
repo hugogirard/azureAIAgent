@@ -174,6 +174,13 @@ module search 'br/public:avm/res/search/search-service:0.7.2' = {
     privateEndpoints: [
       {
         subnetResourceId: vnet.outputs.subnetResourceIds[0]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: privatedns.outputs.aiSearchPrivateDnsZoneResourceId
+            }
+          ]
+        }
       }
     ]
   }
@@ -215,6 +222,19 @@ module cosmosdb 'br/public:avm/res/document-db/database-account:0.12.0' = {
       publicNetworkAccess: 'Disabled'
       networkAclBypass: 'AzureServices'
     }
+    privateEndpoints: [
+      {
+        service: 'Sql'
+        subnetResourceId: vnet.outputs.subnetResourceIds[0]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: privatedns.outputs.cosmosDBPrivateDnsZoneResourceId
+            }
+          ]
+        }
+      }
+    ]
     locations: [
       {
         failoverPriority: 0
