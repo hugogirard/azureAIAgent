@@ -44,6 +44,17 @@ module cognitiveServicesPrivateDnsZone 'br/public:avm/res/network/private-dns-zo
     name: 'privatelink.cognitiveservices.azure.com'
     // Non-required parameters
     location: 'global'
+    a: [
+      {
+        name: jumpboxName
+        ttl: 10
+        aRecords: [
+          {
+            ipv4Address: jumpboxIpv4Address
+          }
+        ]
+      }
+    ]
     virtualNetworkLinks: [
       {
         virtualNetworkResourceId: virtualNetworkResourceId
@@ -57,6 +68,17 @@ module storagePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' 
     name: 'privatelink.blob.${environment().suffixes.storage}'
     // Non-required parameters
     location: 'global'
+    a: [
+      {
+        name: jumpboxName
+        ttl: 10
+        aRecords: [
+          {
+            ipv4Address: jumpboxIpv4Address
+          }
+        ]
+      }
+    ]
     virtualNetworkLinks: [
       {
         virtualNetworkResourceId: virtualNetworkResourceId
@@ -70,6 +92,17 @@ module cosmosDBPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1'
     name: 'privatelink.documents.azure.com'
     // Non-required parameters
     location: 'global'
+    a: [
+      {
+        name: jumpboxName
+        ttl: 10
+        aRecords: [
+          {
+            ipv4Address: jumpboxIpv4Address
+          }
+        ]
+      }
+    ]
     virtualNetworkLinks: [
       {
         virtualNetworkResourceId: virtualNetworkResourceId
