@@ -323,17 +323,17 @@ module project 'ai/project.bicep' = {
   }
 }
 
-// module capabilityhost 'ai/project.capability.host.bicep' = {
-//   scope: rg
-//   params: {
-//     accountName: foundry.outputs.resourceId
-//     aiSearchName: search.outputs.resourceId
-//     azureStorageName: storage.outputs.resourceId
-//     cosmosDBName: cosmosdb.outputs.resourceId
-//     projectCapHost: projectDisplayName
-//     projectName: project.outputs.projectResourceName
-//   }
-// }
+module capabilityhost 'ai/project.capability.host.bicep' = {
+  scope: rg
+  params: {
+    accountName: foundry.outputs.resourceId
+    aiSearchName: search.outputs.resourceId
+    azureStorageName: storage.outputs.resourceId
+    cosmosDBName: cosmosdb.outputs.resourceId
+    projectCapHost: projectDisplayName
+    projectName: project.outputs.projectResourceName
+  }
+}
 
 /* APIM need with managed identity access to Foundry */
 // module rbac 'rbac/foundry.bicep' = {
