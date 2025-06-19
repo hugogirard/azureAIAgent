@@ -68,6 +68,15 @@ param adminUsername string
 @secure()
 param adminPassword string
 
+@description('The description of the project')
+param projectDescription string
+
+@description('The display name of the project')
+param projectDisplayName string
+
+@description('The name of the project')
+param projectName string
+
 /* Create the resource group */
 resource rg 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
@@ -296,6 +305,33 @@ module storage 'br/public:avm/res/storage/storage-account:0.19.0' = {
     }
     allowSharedKeyAccess: false
     publicNetworkAccess: 'Disabled'
+  }
+}
+
+/* Create an AI Foundry Project */
+module project 'ai/project.bicep' = {
+  scope: rg
+  params: {
+    location: location
+    aiSearchName: search.outputs.name
+    azureStorageName: storage.outputs.name
+    cognitiveAccountName: foundry.outputs.resourceName
+    cosmosDBName: cosmosdb.outputs.name
+    projectDescription: projectDescription
+    projectDisplayName: projectDisplayName
+    projectName: projectName
+  }
+}
+
+module capabilityhost 'ai/project.capability.host.bicep' = {
+  scope: rg
+  params: {
+    accountName: foundry.outputs.resourceId
+    aiSearchName: search.outputs.resourceId
+    azureStorageName: storage.outputs.resourceId
+    cosmosDBName: cosmosdb.outputs.resourceId
+    projectCapHost: projectDisplayName
+    projectName: project.outputs.projectResourceName
   }
 }
 

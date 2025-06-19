@@ -77,3 +77,6 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-04-01-previ
     }
   }
 }
+
+output projectResourceName string = project.name
+output projectSystemManagedIdentityID string = project.identity.principalId

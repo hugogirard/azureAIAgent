@@ -29,3 +29,9 @@ param addressPrefixSubnetJumpbox = '172.16.102.0/28'
 param adminPassword = ''
 
 param adminUsername = ''
+
+param projectDescription: 'Contoso Project'
+
+param projectDisplayName: 'contoso'
+
+param projectName: 'contoso'
