@@ -119,21 +119,21 @@ module jumpbox 'compute/jumpbox.bicep' = {
 }
 
 /* API Management instace */
-module apim 'br/public:avm/res/api-management/service:0.9.1' = {
-  scope: rg
-  params: {
-    // Required parameters    
-    name: 'apim-${resourceSuffix}'
-    publisherEmail: publisherEmail
-    publisherName: publisherName
-    managedIdentities: {
-      systemAssigned: true
-    }
-    // Non-required parameters
-    enableDeveloperPortal: true
-    sku: apimSku
-  }
-}
+// module apim 'br/public:avm/res/api-management/service:0.9.1' = {
+//   scope: rg
+//   params: {
+//     // Required parameters    
+//     name: 'apim-${resourceSuffix}'
+//     publisherEmail: publisherEmail
+//     publisherName: publisherName
+//     managedIdentities: {
+//       systemAssigned: true
+//     }
+//     // Non-required parameters
+//     enableDeveloperPortal: true
+//     sku: apimSku
+//   }
+// }
 
 /* Deploy Azure AI Foundry */
 module foundry 'ai/foundry.bicep' = {
@@ -336,18 +336,19 @@ module project 'ai/project.bicep' = {
 // }
 
 /* APIM need with managed identity access to Foundry */
-// module rbac 'rbac/foundry.bicep' = {
-//   scope: rg
-//   params: {
-//     foundryResourceId: foundry.outputs.resourceId
-//     //apimSystemAssignedMIPrincipalId: apim.outputs.systemAssignedMIPrincipalId
-//     openAIResourceId: openai.outputs.resourceId
-//     aiSearchSystemAssignedMIPrincipalId: search.outputs.systemAssignedMIPrincipalId
-//     storageResourceId: storage.outputs.resourceId
-//     aiFoundrySystemAssignedMIPrincipalId: foundry.outputs.systemAssignedMIPrincipalId
-//     aiSearchResourceId: search.outputs.systemAssignedMIPrincipalId
-//   }
-// }
+module rbac 'rbac/foundry.bicep' = {
+  scope: rg
+  params: {
+    foundryResourceId: foundry.outputs.resourceId
+    //apimSystemAssignedMIPrincipalId: apim.outputs.systemAssignedMIPrincipalId
+    openAIResourceId: openai.outputs.resourceId
+    aiSearchSystemAssignedMIPrincipalId: search.outputs.systemAssignedMIPrincipalId
+    storageResourceId: storage.outputs.resourceId
+    aiFoundrySystemAssignedMIPrincipalId: foundry.outputs.systemAssignedMIPrincipalId
+    aiSearchResourceId: search.outputs.systemAssignedMIPrincipalId
+    projectPrincipalSystemAssignedMIPrincipalId: project.outputs.projectSystemManagedIdentityID
+  }
+}
 
 // module rbacUser 'rbac/user.rbac.bicep' = {
 //   scope: rg
