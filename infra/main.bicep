@@ -15,11 +15,11 @@ param resourceGroupName string
 @description('Suffix for the resource group')
 param suffix string
 
-// @description('Publisher Email admin for APIM')
-// param publisherEmail string
+@description('Publisher Email admin for APIM')
+param publisherEmail string
 
-// @description('Publisher Name for APIM')
-// param publisherName string
+@description('Publisher Name for APIM')
+param publisherName string
 
 @description('The chat completion model to deploy, be sure its supported in the specific region')
 @allowed([
@@ -37,14 +37,14 @@ param chatCompletionModel string
 ])
 param embeddingModel string
 
-// @description('The SKU of APIM')
-// @allowed([
-//   'Developer'
-//   'BasicV2'
-//   'StandardV2'
-//   'Premium'
-// ])
-// param apimSku string
+@description('The SKU of APIM')
+@allowed([
+  'Developer'
+  'BasicV2'
+  'StandardV2'
+  'Premium'
+])
+param apimSku string
 
 //param userObjectId string
 
@@ -119,21 +119,21 @@ module jumpbox 'compute/jumpbox.bicep' = {
 }
 
 /* API Management instace */
-// module apim 'br/public:avm/res/api-management/service:0.9.1' = {
-//   scope: rg
-//   params: {
-//     // Required parameters    
-//     name: 'apim-${resourceSuffix}'
-//     publisherEmail: publisherEmail
-//     publisherName: publisherName
-//     managedIdentities: {
-//       systemAssigned: true
-//     }
-//     // Non-required parameters
-//     enableDeveloperPortal: true
-//     sku: apimSku
-//   }
-// }
+module apim 'br/public:avm/res/api-management/service:0.9.1' = {
+  scope: rg
+  params: {
+    // Required parameters    
+    name: 'apim-${resourceSuffix}'
+    publisherEmail: publisherEmail
+    publisherName: publisherName
+    managedIdentities: {
+      systemAssigned: true
+    }
+    // Non-required parameters
+    enableDeveloperPortal: true
+    sku: apimSku
+  }
+}
 
 /* Deploy Azure AI Foundry */
 module foundry 'ai/foundry.bicep' = {
@@ -323,18 +323,6 @@ module project 'ai/project.bicep' = {
   }
 }
 
-// module capabilityhost 'ai/project.capability.host.bicep' = {
-//   scope: rg
-//   params: {
-//     accountName: foundry.outputs.resourceName
-//     aiSearchName: search.outputs.name
-//     azureStorageName: storage.outputs.name
-//     cosmosDBName: cosmosdb.outputs.name
-//     projectCapHost: projectDisplayName
-//     projectName: project.outputs.projectResourceName
-//   }
-// }
-
 /* APIM need with managed identity access to Foundry */
 module rbac 'rbac/foundry.bicep' = {
   scope: rg
@@ -361,9 +349,7 @@ module rbac 'rbac/foundry.bicep' = {
 //   }
 // }
 
-// @description('The name of APIM resource')
-// output apimResourceName string = apim.outputs.name
-
+output apimResourceName string = apim.outputs.name
 output foundryEndpoint string = foundry.outputs.endpoint
 output accountResourceName string = foundry.outputs.resourceName
 output aiSearchResourceName string = search.outputs.name
