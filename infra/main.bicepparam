@@ -30,8 +30,8 @@ param adminPassword = ''
 
 param adminUsername = ''
 
-param projectDescription: 'Contoso Project'
+param projectDescription = 'Contoso Project'
 
-param projectDisplayName: 'contoso'
+param projectDisplayName = 'contoso'
 
-param projectName: 'contoso'
+param projectName = 'contoso'
