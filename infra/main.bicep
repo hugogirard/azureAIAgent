@@ -326,10 +326,10 @@ module project 'ai/project.bicep' = {
 module capabilityhost 'ai/project.capability.host.bicep' = {
   scope: rg
   params: {
-    accountName: foundry.outputs.resourceId
-    aiSearchName: search.outputs.resourceId
-    azureStorageName: storage.outputs.resourceId
-    cosmosDBName: cosmosdb.outputs.resourceId
+    accountName: foundry.outputs.resourceName
+    aiSearchName: search.outputs.name
+    azureStorageName: storage.outputs.name
+    cosmosDBName: cosmosdb.outputs.name
     projectCapHost: projectDisplayName
     projectName: project.outputs.projectResourceName
   }
