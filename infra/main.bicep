@@ -15,11 +15,11 @@ param resourceGroupName string
 @description('Suffix for the resource group')
 param suffix string
 
-@description('Publisher Email admin for APIM')
-param publisherEmail string
+// @description('Publisher Email admin for APIM')
+// param publisherEmail string
 
-@description('Publisher Name for APIM')
-param publisherName string
+// @description('Publisher Name for APIM')
+// param publisherName string
 
 @description('The chat completion model to deploy, be sure its supported in the specific region')
 @allowed([
@@ -37,14 +37,14 @@ param chatCompletionModel string
 ])
 param embeddingModel string
 
-@description('The SKU of APIM')
-@allowed([
-  'Developer'
-  'BasicV2'
-  'StandardV2'
-  'Premium'
-])
-param apimSku string
+// @description('The SKU of APIM')
+// @allowed([
+//   'Developer'
+//   'BasicV2'
+//   'StandardV2'
+//   'Premium'
+// ])
+// param apimSku string
 
 //param userObjectId string
 
@@ -364,5 +364,10 @@ module rbac 'rbac/foundry.bicep' = {
 // @description('The name of APIM resource')
 // output apimResourceName string = apim.outputs.name
 
-@description('The endpoint of Azure AI Foundry')
 output foundryEndpoint string = foundry.outputs.endpoint
+output accountResourceName string = foundry.outputs.resourceName
+output aiSearchResourceName string = search.outputs.name
+output azureStorageResourceName string = storage.outputs.name
+output cosmosDbResourceName string = cosmosdb.outputs.name
+output resourceGroupName string = resourceGroupName
+output projectName string = projectName
