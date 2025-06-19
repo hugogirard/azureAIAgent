@@ -345,7 +345,7 @@ module rbac 'rbac/foundry.bicep' = {
     aiSearchSystemAssignedMIPrincipalId: search.outputs.systemAssignedMIPrincipalId
     storageResourceId: storage.outputs.resourceId
     aiFoundrySystemAssignedMIPrincipalId: foundry.outputs.systemAssignedMIPrincipalId
-    aiSearchResourceId: search.outputs.systemAssignedMIPrincipalId
+    aiSearchResourceId: search.outputs.resourceId
     projectPrincipalSystemAssignedMIPrincipalId: project.outputs.projectSystemManagedIdentityID
   }
 }
