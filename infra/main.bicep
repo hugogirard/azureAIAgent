@@ -123,7 +123,7 @@ module apim 'br/public:avm/res/api-management/service:0.9.1' = {
   scope: rg
   params: {
     // Required parameters    
-    name: 'apim-${resourceSuffix}'
+    name: 'apimgnt-${resourceSuffix}'
     publisherEmail: publisherEmail
     publisherName: publisherName
     managedIdentities: {
