@@ -9,8 +9,9 @@ param openAiPrivateDnsZoneResourceId string
 param cognitiveServicesPrivateDnsZoneResourceId string
 
 var aiFoundryName = 'aifoundry${suffix}'
-var networkInjection = true
+var networkInjection = 'true'
 
+#disable-next-line BCP036
 resource aiFoundry 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' = {
   name: aiFoundryName
   location: location
@@ -23,6 +24,11 @@ resource aiFoundry 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' = {
   kind: 'AIServices'
   properties: {
     publicNetworkAccess: 'Disabled'
+    networkAcls: {
+      defaultAction: 'Allow'
+      virtualNetworkRules: []
+      ipRules: []
+    }
     // required to work in AI Foundry
     allowProjectManagement: true
     // true is not supported today

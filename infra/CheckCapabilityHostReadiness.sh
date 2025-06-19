@@ -11,13 +11,11 @@ fi
 
 #while true; do
     token=$(az account get-access-token --subscription "$subscriptionId" --query accessToken -o tsv)
-    uri="https://management.azure.com/subscriptions/$subscriptionId/resourceGroups/$resourcegroup/providers/Microsoft.CognitiveServices/accounts/$accountName/capabilityHosts/?api-version=2025-04-01-preview"
-    echo $uri
-    #content=$(az rest --method get --uri "$uri" --headers "Authorization=Bearer $token")
-    #echo $content
-    #provisioningState=$(echo "$content" | jq -r '.value[0].properties.provisioningState')
+    uri="https://management.azure.com/subscriptions/$subscriptionId/resourceGroups/$resourcegroup/providers/Microsoft.CognitiveServices/accounts/$accountName/capabilityHosts/?api-version=2025-04-01-preview"    
+    content=$(az rest --method get --uri "$uri" --headers "Authorization=Bearer $token")    
+    provisioningState=$(echo "$content" | jq -r '.value[0].properties.provisioningState')
 
-    # echo "Provisioning State: $provisioningState"
+    echo "Provisioning State: $provisioningState"
 
     # if [[ "$provisioningState" == "Succeeded" ]]; then
     #     echo "Provisioning State: $provisioningState, Please proceed with project creation template."
