@@ -350,28 +350,28 @@ module rbacproject 'rbac/project.bicep' = {
   }
 }
 
-module addProjectCapabilityHost 'ai/add-project-capability-host.bicep' = {
-  scope: rg
-  params: {
-    accountName: foundry.outputs.resourceName
-    aiSearchConnection: project.outputs.aiSearchConnection
-    azureStorageConnection: project.outputs.azureStorageConnection
-    cosmosDBConnection: project.outputs.cosmosDBConnection
-    projectCapHost: 'caphostproj'
-    projectName: project.outputs.projectName
-  }
-}
+// module addProjectCapabilityHost 'ai/add-project-capability-host.bicep' = {
+//   scope: rg
+//   params: {
+//     accountName: foundry.outputs.resourceName
+//     aiSearchConnection: project.outputs.aiSearchConnection
+//     azureStorageConnection: project.outputs.azureStorageConnection
+//     cosmosDBConnection: project.outputs.cosmosDBConnection
+//     projectCapHost: 'caphostproj'
+//     projectName: project.outputs.projectName
+//   }
+// }
 
 // Those RBAC needs to assigned after the creation of the caphost
-module caphostrbac 'rbac/caphost.bicep' = {
-  scope: rg
-  params: {
-    aiProjectPrincipalId: project.outputs.projectSystemManagedIdentityID
-    cosmosAccountName: cosmosdb.outputs.name
-    projectWorkspaceId: formatProjectWorkspaceId.outputs.projectWorkspaceIdGuid
-    storageName: storage.outputs.name
-  }
-}
+// module caphostrbac 'rbac/caphost.bicep' = {
+//   scope: rg
+//   params: {
+//     aiProjectPrincipalId: project.outputs.projectSystemManagedIdentityID
+//     cosmosAccountName: cosmosdb.outputs.name
+//     projectWorkspaceId: formatProjectWorkspaceId.outputs.projectWorkspaceIdGuid
+//     storageName: storage.outputs.name
+//   }
+// }
 
 /* APIM need with managed identity access to Foundry */
 // module rbac 'rbac/foundry.bicep' = {
