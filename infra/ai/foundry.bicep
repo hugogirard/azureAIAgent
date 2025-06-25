@@ -34,11 +34,13 @@ resource aiFoundry 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' = {
     // true is not supported today
     disableLocalAuth: false
     customSubDomainName: aiFoundryName
-    networkInjections: {
-      scenario: 'agent'
-      subnetArmId: agentSubnetId
-      useMicrosoftManagedNetwork: false
-    }
+    networkInjections: [
+      {
+        scenario: 'agent'
+        subnetArmId: agentSubnetId
+        useMicrosoftManagedNetwork: false
+      }
+    ]
   }
 }
 
