@@ -327,7 +327,7 @@ module project 'ai/project.bicep' = {
 module rbac 'rbac/foundry.bicep' = {
   scope: rg
   params: {
-    foundryResourceId: foundry.outputs.resourceId
+    //foundryResourceId: foundry.outputs.resourceId
     //apimSystemAssignedMIPrincipalId: apim.outputs.systemAssignedMIPrincipalId
     openAIResourceId: openai.outputs.resourceId
     aiSearchSystemAssignedMIPrincipalId: search.outputs.systemAssignedMIPrincipalId

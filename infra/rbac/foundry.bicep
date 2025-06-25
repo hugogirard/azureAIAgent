@@ -3,7 +3,7 @@ param aiSearchSystemAssignedMIPrincipalId string
 param aiFoundrySystemAssignedMIPrincipalId string
 param projectPrincipalSystemAssignedMIPrincipalId string
 param openAIResourceId string
-param foundryResourceId string
+//param foundryResourceId string
 param storageResourceId string
 param aiSearchResourceId string
 
