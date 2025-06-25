@@ -1,13 +1,13 @@
+param cosmosDBConnection string
+param azureStorageConnection string
+param aiSearchConnection string
 param projectName string
 param accountName string
 param projectCapHost string
-param cosmosDBName string
-param azureStorageName string
-param aiSearchName string
 
-var threadConnections = ['${cosmosDBName}']
-var storageConnections = ['${azureStorageName}']
-var vectorStoreConnections = ['${aiSearchName}']
+var threadConnections = ['${cosmosDBConnection}']
+var storageConnections = ['${azureStorageConnection}']
+var vectorStoreConnections = ['${aiSearchConnection}']
 
 resource account 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' existing = {
   name: accountName
