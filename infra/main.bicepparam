@@ -35,3 +35,5 @@ param projectDescription = 'Contoso Project'
 param projectDisplayName = 'contoso'
 
 param projectName = 'contoso'
+
+param deployApim = false

@@ -77,6 +77,9 @@ param projectDisplayName string
 @description('The name of the project')
 param projectName string
 
+@description('Switch if we deploy an instance of APIM')
+param deployApim bool
+
 /* Create the resource group */
 resource rg 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
@@ -119,7 +122,7 @@ module jumpbox 'compute/jumpbox.bicep' = {
 }
 
 /* API Management instace */
-module apim 'br/public:avm/res/api-management/service:0.9.1' = {
+module apim 'br/public:avm/res/api-management/service:0.9.1' = if (deployApim) {
   scope: rg
   params: {
     // Required parameters    
@@ -167,9 +170,13 @@ module search 'br/public:avm/res/search/search-service:0.7.2' = {
   scope: rg
   name: 'search'
   params: {
-    disableLocalAuth: true
+    disableLocalAuth: false
+    authOptions: {
+      aadOrApiKey: { aadAuthFailureMode: 'http401WithBearerChallenge' }
+    }
     publicNetworkAccess: 'Disabled'
     networkRuleSet: {
+      bypass: 'None'
       ipRules: []
     }
     name: 'search${replace(resourceSuffix,'-','')}'
@@ -231,6 +238,7 @@ module cosmosdb 'br/public:avm/res/document-db/database-account:0.12.0' = {
       publicNetworkAccess: 'Disabled'
       networkAclBypass: 'AzureServices'
     }
+    defaultConsistencyLevel: 'Session'
     privateEndpoints: [
       {
         service: 'Sql'
@@ -290,6 +298,8 @@ module storage 'br/public:avm/res/storage/storage-account:0.19.0' = {
     name: 'str${replace(resourceSuffix,'-','')}'
     location: location
     allowBlobPublicAccess: false
+    minimumTlsVersion: 'TLS1_2'
+    skuName: 'Standard_LRS'
     kind: 'StorageV2'
     networkAcls: {
       defaultAction: 'Deny'
@@ -323,20 +333,60 @@ module project 'ai/project.bicep' = {
   }
 }
 
-/* APIM need with managed identity access to Foundry */
-module rbac 'rbac/foundry.bicep' = {
+module formatProjectWorkspaceId 'ai/format-project-workspace-id.bicep' = {
   scope: rg
   params: {
-    //foundryResourceId: foundry.outputs.resourceId
-    //apimSystemAssignedMIPrincipalId: apim.outputs.systemAssignedMIPrincipalId
-    openAIResourceId: openai.outputs.resourceId
-    aiSearchSystemAssignedMIPrincipalId: search.outputs.systemAssignedMIPrincipalId
-    storageResourceId: storage.outputs.resourceId
-    aiFoundrySystemAssignedMIPrincipalId: foundry.outputs.systemAssignedMIPrincipalId
-    aiSearchResourceId: search.outputs.resourceId
-    projectPrincipalSystemAssignedMIPrincipalId: project.outputs.projectSystemManagedIdentityID
+    projectWorkspaceId: project.outputs.projectWorkspaceId
   }
 }
+
+module rbacproject 'rbac/project.bicep' = {
+  scope: rg
+  params: {
+    cosmosDBResourceId: cosmosdb.outputs.resourceId
+    projectPrincipalId: project.outputs.projectSystemManagedIdentityID
+    storageResourceId: storage.outputs.resourceId
+    aiSearchResourceId: search.outputs.resourceId
+  }
+}
+
+module addProjectCapabilityHost 'ai/add-project-capability-host.bicep' = {
+  scope: rg
+  params: {
+    accountName: foundry.outputs.resourceName
+    aiSearchConnection: project.outputs.aiSearchConnection
+    azureStorageConnection: project.outputs.azureStorageConnection
+    cosmosDBConnection: project.outputs.cosmosDBConnection
+    projectCapHost: 'caphostproj'
+    projectName: project.outputs.projectName
+  }
+}
+
+// Those RBAC needs to assigned after the creation of the caphost
+module caphostrbac 'rbac/caphost.bicep' = {
+  scope: rg
+  params: {
+    aiProjectPrincipalId: project.outputs.projectSystemManagedIdentityID
+    cosmosAccountName: cosmosdb.outputs.name
+    projectWorkspaceId: formatProjectWorkspaceId.outputs.projectWorkspaceIdGuid
+    storageName: storage.outputs.name
+  }
+}
+
+/* APIM need with managed identity access to Foundry */
+// module rbac 'rbac/foundry.bicep' = {
+//   scope: rg
+//   params: {
+//     //foundryResourceId: foundry.outputs.resourceId
+//     //apimSystemAssignedMIPrincipalId: apim.outputs.systemAssignedMIPrincipalId
+//     openAIResourceId: openai.outputs.resourceId
+//     aiSearchSystemAssignedMIPrincipalId: search.outputs.systemAssignedMIPrincipalId
+//     storageResourceId: storage.outputs.resourceId
+//     aiFoundrySystemAssignedMIPrincipalId: foundry.outputs.systemAssignedMIPrincipalId
+//     aiSearchResourceId: search.outputs.resourceId
+//     projectPrincipalSystemAssignedMIPrincipalId: project.outputs.projectSystemManagedIdentityID
+//   }
+// }
 
 // module rbacUser 'rbac/user.rbac.bicep' = {
 //   scope: rg

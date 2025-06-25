@@ -78,5 +78,14 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-04-01-previ
   }
 }
 
-output projectResourceName string = project.name
+output projectResourceId string = project.id
 output projectSystemManagedIdentityID string = project.identity.principalId
+output projectName string = project.name
+
+#disable-next-line BCP053
+output projectWorkspaceId string = project.properties.internalId
+
+// return the BYO connection names
+output cosmosDBConnection string = cosmosDBName
+output azureStorageConnection string = azureStorageName
+output aiSearchConnection string = aiSearchName
