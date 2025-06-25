@@ -399,7 +399,7 @@ module caphostrbac 'rbac/caphost.bicep' = {
 //   }
 // }
 
-output apimResourceName string = apim.outputs.name
+output apimResourceName string = deployApim ? apim.outputs.name : ''
 output foundryEndpoint string = foundry.outputs.endpoint
 output accountResourceName string = foundry.outputs.resourceName
 output aiSearchResourceName string = search.outputs.name
