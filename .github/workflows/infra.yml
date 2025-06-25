@@ -20,7 +20,10 @@ jobs:
     steps:
       
       - uses: actions/checkout@v4
-          
+
+      - name: Install latest bicep version
+        uses: anthony-c-martin/setup-bicep@v0.3
+                    
       - name: Azure Login
         uses: Azure/login@v2        
         with:
