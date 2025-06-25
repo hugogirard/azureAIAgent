@@ -9,7 +9,7 @@ param openAiPrivateDnsZoneResourceId string
 param cognitiveServicesPrivateDnsZoneResourceId string
 
 var aiFoundryName = 'aifoundry${suffix}'
-var networkInjection = 'true'
+//var networkInjection = 'true'
 
 #disable-next-line BCP036
 resource aiFoundry 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' = {
@@ -34,15 +34,11 @@ resource aiFoundry 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' = {
     // true is not supported today
     disableLocalAuth: false
     customSubDomainName: aiFoundryName
-    networkInjections: ((networkInjection == 'true')
-      ? [
-          {
-            scenario: 'agent'
-            subnetArmId: agentSubnetId
-            useMicrosoftManagedNetwork: false
-          }
-        ]
-      : null)
+    networkInjections: {
+      scenario: 'agent'
+      subnetArmId: agentSubnetId
+      useMicrosoftManagedNetwork: false
+    }
   }
 }
 
